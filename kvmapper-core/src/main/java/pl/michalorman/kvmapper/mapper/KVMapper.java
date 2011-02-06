@@ -1,6 +1,10 @@
 package pl.michalorman.kvmapper.mapper;
 
 import pl.michalorman.kvmapper.config.Config;
+import pl.michalorman.kvmapper.introspect.DefaultTypeIntrospector;
+import pl.michalorman.kvmapper.introspect.TypeIntrospector;
+import pl.michalorman.kvmapper.serializer.DefaultKeyValuePairsSerializer;
+import pl.michalorman.kvmapper.serializer.KeyValuePairsSerializer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,6 +25,12 @@ public class KVMapper {
      * the configuration, or create instance providing custom configuration. 
      */
     private Config config;
+
+    /** Component performing type introspection. */
+    private TypeIntrospector typeIntrospector = new DefaultTypeIntrospector();
+
+    /** Component performing object serialization. */
+    private KeyValuePairsSerializer keyValuePairsSerializer = new DefaultKeyValuePairsSerializer();
 
     /** Creates the <tt>KVMapper</tt> instance with default {@link Config} */
     public KVMapper() {
@@ -74,9 +84,9 @@ public class KVMapper {
     }
 
     /**
-     * Serializes provided <tt>object</tt> and writes result to provided <tt>output</tt>.
+     * Serializes provided <tt>object</tt> and appends the serialization result to provided <tt>output</tt>.
      *
-     * @param output Object to which write the output.
+     * @param output Object to which append the serialization result.
      * @param object Object to serialize.
      */
     public void writeObject(Appendable output, Object object) {
@@ -84,7 +94,7 @@ public class KVMapper {
     }
 
     /**
-     * Serializes provided <tt>object</tt> and writes result to provided <tt>output</tt>.
+     * Serializes provided <tt>object</tt> and writes the serialization result to provided <tt>output</tt>.
      *
      * @param output Object to which write the output.
      * @param object Object to serialize.
@@ -94,21 +104,21 @@ public class KVMapper {
     }
 
     /**
-     * Serializes provided collection of <tt>objects<tt> and writes result to provided
+     * Serializes provided collection of <tt>objects<tt> and appends the serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which write the output.
+     * @param output Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(Appendable output, Object[] objects) {
         writeObjects(output, Arrays.asList(objects));
     }
 
-    /**
-     * Serializes provided collection of <tt>objects<tt> and writes result to provided
+   /**
+     * Serializes provided collection of <tt>objects<tt> and appends the serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which write the output.
+     * @param output Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(Appendable output, Iterable<?> objects) {
@@ -116,22 +126,23 @@ public class KVMapper {
     }
 
     /**
-     * Iterates over each element using provided <tt>iterator</tt> and writes
-     * result in the provided <tt>output</tt>.
+     * Iterates and serialize each element using provided <tt>iterator</tt> and appends serialization
+     * result to provided <tt>output</tt>.
      *
-     * @param output Object to which write the output.
-     * @param iterator Object to use to iterate over each object to serialize.
+     * @param output Object to which append the serialization result.
+     * @param iterator Iterator to use to iterate over each object to serialize.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) {
-        // TODO: implement body
-        throw new UnsupportedOperationException("Not implemented yet!");
+        while (iterator.hasNext()) {
+            keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
+        }
     }
 
     /**
-     * Serializes provided collection of <tt>objects<tt> and writes result to provided
+     * Serializes provided collection of <tt>objects<tt> and writes serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which write the output.
+     * @param output Object to which write the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(OutputStream output, Object[] objects) {
@@ -139,10 +150,10 @@ public class KVMapper {
     }
 
     /**
-     * Serializes provided collection of <tt>objects<tt> and writes result to provided
+     * Serializes provided collection of <tt>objects<tt> and writes the serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which write the output.
+     * @param output Object to which write the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(OutputStream output, Iterable<?> objects) {
@@ -150,10 +161,10 @@ public class KVMapper {
     }
 
     /**
-     * Iterates over each element using provided <tt>iterator</tt> and writes
+     * Iterates and serializes each element using provided <tt>iterator</tt> and writes the serialization
      * result in the provided <tt>output</tt>.
      *
-     * @param output Object to which write the output.
+     * @param output Object to which write the serialization result.
      * @param iterator Object to use to iterate over each object to serialize.
      */
     public void writeObjects(OutputStream output, Iterator<?> iterator) {

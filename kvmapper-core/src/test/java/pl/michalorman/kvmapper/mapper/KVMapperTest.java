@@ -27,7 +27,7 @@ public class KVMapperTest {
         };
     }
 
-    @Test(description = "Should serialize primitive properties of an object and write to appendable.", dataProvider = "typeValues")
+    @Test(description = "Should serializer primitive properties of an object and write to appendable.", dataProvider = "typeValues")
     public void shouldWriteObjectToAppendable(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
                                           boolean typeBoolean, char typeChar) {
         Primitives target = new Primitives(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar);
