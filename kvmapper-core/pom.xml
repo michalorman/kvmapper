@@ -14,4 +14,11 @@
     <artifactId>kvmapper-core</artifactId>
     <version>1.0</version>
     <name>KVMapper :: Core</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
 </project>
