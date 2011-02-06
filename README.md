@@ -23,9 +23,19 @@ To map key-value pairs to Java objects use instance of ``KVMapper`` class:
 The ``readObject()`` method will read given input and instantiate object of given class
 applying values to fields according to key-value pairs given in the input.
 
-To serialize object use the ``writeObject()`` method:
+There are several ways to serialize object. You can use the ``writeObject()`` method,
+that serializes object to specified output:
 
-    mapper.writeObject(user); // => "firstName = John\nlastName = Doe"
+    StringBuilder output = new StringBuilder();
+    mapper.writeObject(builder, user);
+    builder.toString(); // => "firstName = John\nlastName = Doe"
+
+You can serialize object directly to ``String`` using ``dump()`` method:
+
+    mapper.dump(user); // => "firstName = John\nlastName = Doe"
+
+There are also ``writeObjects()`` and ``dumpAll()`` methods which iterates over collection or
+array of objects and serializes each of them.
 
 The ``KVMapper`` allows to deserialize and serialize key-value pairs to and from a ``Map``:
 
@@ -34,6 +44,10 @@ The ``KVMapper`` allows to deserialize and serialize key-value pairs to and from
     result.get("lastName"); // => "Doe"
 
     mapper.dump(result); // => "firstName = John\nlastName = Doe"
+
+    StringBuilder output = new StringBuilder();
+    mapper.writeObject(builder, result);
+    builder.toString(); // => "firstName = John\nlastName = Doe"
 
 This can be used if you do not want to map key-value pairs to particular object. However in this
 case all values will be of type ``String``, while mapping to object values will be converted to
