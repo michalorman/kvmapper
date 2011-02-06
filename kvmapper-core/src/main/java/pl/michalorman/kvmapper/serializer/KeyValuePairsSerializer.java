@@ -1,4 +1,4 @@
-package pl.michalorman.kvmapper.serialize;
+package pl.michalorman.kvmapper.serializer;
 
 /**
  * Interface for components performing the serialization of object to key-value pairs.
