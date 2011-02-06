@@ -1,11 +1,13 @@
 package pl.michalorman.kvmapper.mapper;
 
 import pl.michalorman.kvmapper.config.Config;
+import pl.michalorman.kvmapper.exception.KVMapperException;
 import pl.michalorman.kvmapper.introspect.DefaultTypeIntrospector;
 import pl.michalorman.kvmapper.introspect.TypeIntrospector;
 import pl.michalorman.kvmapper.serializer.DefaultKeyValuePairsSerializer;
 import pl.michalorman.kvmapper.serializer.KeyValuePairsSerializer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -22,7 +24,7 @@ public class KVMapper {
 
     /**
      * Serialization/deserialization config. Create getter and setter methods to alter
-     * the configuration, or create instance providing custom configuration. 
+     * the configuration, or create instance providing custom configuration.
      */
     private Config config;
 
@@ -47,8 +49,9 @@ public class KVMapper {
      * of the specified <tt>type</tt> applying values to matching properties.
      *
      * @param input Input to be read.
-     * @param type Class to be instantiated.
-     * @param <T> Type of object to be instantiated.
+     * @param type  Class to be instantiated.
+     * @param <T>   Type of object to be instantiated.
+     *
      * @return New instance of specified <tt>type</tt>.
      */
     public <T> T readObject(CharSequence input, Class<T> type) {
@@ -60,8 +63,9 @@ public class KVMapper {
      * of the specified <tt>type</tt> applying values to matching properties.
      *
      * @param input Input to be read.
-     * @param type Class to be instantiated.
-     * @param <T> Type of object to be instantiated.
+     * @param type  Class to be instantiated.
+     * @param <T>   Type of object to be instantiated.
+     *
      * @return New instance of specified <tt>type</tt>.
      */
     public <T> T readObject(String input, Class<T> type) {
@@ -74,8 +78,9 @@ public class KVMapper {
      * of the specified <tt>type</tt> applying values to matching properties.
      *
      * @param input Input to be read.
-     * @param type Class to be instantiated.
-     * @param <T> Type of object to be instantiated.
+     * @param type  Class to be instantiated.
+     * @param <T>   Type of object to be instantiated.
+     *
      * @return New instance of specified <tt>type</tt>.
      */
     public <T> T readObject(InputStream input, Class<T> type) {
@@ -107,18 +112,18 @@ public class KVMapper {
      * Serializes provided collection of <tt>objects<tt> and appends the serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which append the serialization result.
+     * @param output  Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(Appendable output, Object[] objects) {
         writeObjects(output, Arrays.asList(objects));
     }
 
-   /**
+    /**
      * Serializes provided collection of <tt>objects<tt> and appends the serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which append the serialization result.
+     * @param output  Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(Appendable output, Iterable<?> objects) {
@@ -129,12 +134,16 @@ public class KVMapper {
      * Iterates and serialize each element using provided <tt>iterator</tt> and appends serialization
      * result to provided <tt>output</tt>.
      *
-     * @param output Object to which append the serialization result.
+     * @param output   Object to which append the serialization result.
      * @param iterator Iterator to use to iterate over each object to serialize.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) {
-        while (iterator.hasNext()) {
-            keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
+        try {
+            while (iterator.hasNext()) {
+                keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
+            }
+        } catch (IOException e) {
+            throw new KVMapperException("Unable to append serialization result to provided output.", e);
         }
     }
 
@@ -142,7 +151,7 @@ public class KVMapper {
      * Serializes provided collection of <tt>objects<tt> and writes serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which write the serialization result.
+     * @param output  Object to which write the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(OutputStream output, Object[] objects) {
@@ -153,7 +162,7 @@ public class KVMapper {
      * Serializes provided collection of <tt>objects<tt> and writes the serialization result to provided
      * <tt>output</tt>.
      *
-     * @param output Object to which write the serialization result.
+     * @param output  Object to which write the serialization result.
      * @param objects Collection of objects to serialize.
      */
     public void writeObjects(OutputStream output, Iterable<?> objects) {
@@ -164,7 +173,7 @@ public class KVMapper {
      * Iterates and serializes each element using provided <tt>iterator</tt> and writes the serialization
      * result in the provided <tt>output</tt>.
      *
-     * @param output Object to which write the serialization result.
+     * @param output   Object to which write the serialization result.
      * @param iterator Object to use to iterate over each object to serialize.
      */
     public void writeObjects(OutputStream output, Iterator<?> iterator) {
@@ -176,6 +185,7 @@ public class KVMapper {
      * Serializes provided <tt>object</tt> and returns result as string.
      *
      * @param object Object to serialize.
+     *
      * @return Serialization result as string.
      */
     public String dump(Object object) {
@@ -187,6 +197,7 @@ public class KVMapper {
      * as string.
      *
      * @param objects Collection of objects to serialize.
+     *
      * @return Serialization result as string.
      */
     public String dumpAll(Object[] objects) {
@@ -198,6 +209,7 @@ public class KVMapper {
      * as string.
      *
      * @param objects Collection of objects to serialize.
+     *
      * @return Serialization result as string.
      */
     public String dumpAll(Iterable<?> objects) {
@@ -209,6 +221,7 @@ public class KVMapper {
      * each of them. Serialization result is returned as string.
      *
      * @param iterator Iterator to use to iterate over each object to serialize.
+     *
      * @return Serialization result as string.
      */
     public String dumpAll(Iterator<?> iterator) {

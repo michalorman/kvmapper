@@ -3,6 +3,8 @@ package pl.michalorman.kvmapper.serializer;
 import pl.michalorman.kvmapper.config.Config;
 import pl.michalorman.kvmapper.introspect.TypeIntrospector;
 
+import java.io.IOException;
+
 /**
  * Interface for components performing the serialization of object to key-value pairs.
  *
@@ -18,5 +20,5 @@ public interface KeyValuePairsSerializer {
      * @param config Serialization config.
      * @param typeIntrospector Component performing type introspection.
      */
-    void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector);
+    void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector) throws IOException;
 }

@@ -14,8 +14,16 @@ public class Config {
     /** Character that separates key-value pairs */
     private char pairSeparator = '\n';
 
+    public char getKeyValueSeparator() {
+        return keyValueSeparator;
+    }
+
     public void setKeyValueSeparator(char keyValueSeparator) {
         this.keyValueSeparator = keyValueSeparator;
+    }
+
+    public char getPairSeparator() {
+        return pairSeparator;
     }
 
     public void setPairSeparator(char pairSeparator) {
