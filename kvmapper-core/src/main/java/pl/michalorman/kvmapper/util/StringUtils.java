@@ -16,4 +16,11 @@ public class StringUtils {
         return Character.toLowerCase(s.charAt(0)) + s.substring(1);
     }
 
+    public static boolean hasLength(String s) {
+        return s != null && s.length() > 0;
+    }
+
+    public static boolean isBlank(String s) {
+        return !hasLength(s) || "null".equals(s) || "".equals(s.trim());
+    }
 }

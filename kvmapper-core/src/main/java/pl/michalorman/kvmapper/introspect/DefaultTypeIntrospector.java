@@ -30,7 +30,7 @@ public class DefaultTypeIntrospector implements TypeIntrospector {
                 }
             }
         }
-        return null;
+        return description;
     }
 
     private boolean isNotIgnored(AnnotatedElement element, String propertyName, Class<?> type) {

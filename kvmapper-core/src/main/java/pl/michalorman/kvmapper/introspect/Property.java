@@ -25,6 +25,16 @@ public class Property {
         this.name = name;
     }
 
+    /**
+     *
+     *
+     * @param target
+     * @param arg
+     */
+    public void setValue(Object target, String arg) {
+
+    }
+
     public String getName() {
         return name;
     }
