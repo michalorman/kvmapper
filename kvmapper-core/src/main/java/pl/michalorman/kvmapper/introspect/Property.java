@@ -81,6 +81,10 @@ public class Property {
         this.type = type;
     }
 
+    public Class<?> getType() {
+        return type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

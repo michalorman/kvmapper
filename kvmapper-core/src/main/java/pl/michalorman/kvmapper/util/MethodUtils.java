@@ -10,7 +10,7 @@ public class MethodUtils {
     public static boolean hasGetterSignature(Method method) {
         return (method.getName().startsWith("get") || method.getName().startsWith("is")) &&
                 method.getParameterTypes().length == 0 &&
-                !(method.getReturnType().equals(Void.class) &&
+                !(method.getReturnType().equals(Void.class) ||
                         method.getReturnType().equals(void.class));
     }
 
