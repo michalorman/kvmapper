@@ -91,6 +91,25 @@ public class KVMapperTest {
         assertEquals(result, "typeShort:null,typeInt:null,typeLong:null,typeFloat:null,typeDouble:null,typeBoolean:null,typeChar:null,typeString:null");
     }
 
+    @DataProvider
+    public Object[][] dataForDisallowedPropertiesTest() {
+        return new Object[][]{
+                { new String[]{ "class", "typeShort" }, "typeInt=null\ntypeLong=null\ntypeFloat=null\ntypeDouble=null\ntypeBoolean=null\ntypeChar=null\ntypeString=null" },
+                { new String[]{ "class", "typeShort", "typeInt", "typeLong", "typeFloat", "typeDouble", "typeBoolean", "typeChar" }, "typeString=null" },
+                { new String[]{ "class", "typeShort", "typeInt", "typeLong", "typeFloat", "typeDouble", "typeBoolean", "typeChar", "typeString" }, "" },
+        };
+    }
+
+    @Test(description = "Should serialize object excluding disallowed properties.", dataProvider = "dataForDisallowedPropertiesTest")
+    public void shouldWriteObjectExcludingDisallowedProperties(String[] disallowedProperties, String expectedResult) throws IOException {
+        Types target = new Types();
+        StringBuilder builder = new StringBuilder();
+        mapper.getConfig().setDisallowedProperties(disallowedProperties);
+        mapper.writeObject(builder, target);
+        String result = builder.toString();
+        assertEquals(result, expectedResult);
+    }
+
     /*==========================================================================
         Classes used in tests
      */

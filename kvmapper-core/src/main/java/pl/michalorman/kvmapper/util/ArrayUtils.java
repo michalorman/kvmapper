@@ -1,6 +1,6 @@
 package pl.michalorman.kvmapper.util;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
 
 /**
  * @author Michal Orman
@@ -16,7 +16,7 @@ public class ArrayUtils {
      * @return <tt>true</tt> if object is included, otherwise return <tt>false</tt>.
      */
     public static boolean includes(Object[] array, Object object) {
-        return Arrays.binarySearch(array, object) >= 0;
+        return asList(array).contains(object);
     }
 
 }

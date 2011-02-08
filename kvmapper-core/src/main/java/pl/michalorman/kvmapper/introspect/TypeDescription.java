@@ -52,8 +52,10 @@ public class TypeDescription {
         Map<String, Property> properties = new HashMap<String, Property>(this.properties); // copy mapped properties
         List<Property> orderedProperties = new ArrayList<Property>(properties.size());
         for (String propertyName : order) {
-            orderedProperties.add(properties.get(propertyName));
-            properties.remove(propertyName);
+            if (properties.containsKey(propertyName)) {
+                orderedProperties.add(properties.get(propertyName));
+                properties.remove(propertyName);
+            }
         }
         orderedProperties.addAll(properties.values());
         return orderedProperties;
