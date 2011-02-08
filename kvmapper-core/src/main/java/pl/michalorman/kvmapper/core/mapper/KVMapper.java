@@ -137,7 +137,7 @@ public class KVMapper {
      * @param iterator Iterator to use to iterate over each object to serialize.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) throws IOException {
-        keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
+        while (iterator.hasNext()) keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
     }
 
     /**
