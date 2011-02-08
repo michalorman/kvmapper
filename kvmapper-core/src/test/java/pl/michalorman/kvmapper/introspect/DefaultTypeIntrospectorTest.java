@@ -1,7 +1,10 @@
 package pl.michalorman.kvmapper.introspect;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pl.michalorman.kvmapper.annotation.ExceptProperties;
+import pl.michalorman.kvmapper.annotation.IgnoreProperty;
 import pl.michalorman.kvmapper.config.Config;
 
 import java.util.Collection;
@@ -124,8 +127,82 @@ public class DefaultTypeIntrospectorTest {
         assertTrue(result.getWritableProperties().isEmpty(), "Description should not have any writable properties.");
     }
 
-    public class IgnoredProperty {
+    public class WithoutReadableProperty {
+        private String property;
 
+        public void setProperty(String property) {
+            this.property = property;
+        }
+    }
+
+    public class IgnoringReadableProperty {
+        private String property;
+
+        @IgnoreProperty
+        public String getProperty() {
+            return property;
+        }
+
+        public void setProperty(String property) {
+            this.property = property;
+        }
+    }
+
+    @DataProvider
+    public Object[][] dataFormOmittingReadableProperty() {
+        return new Object[][] {
+                { WithoutReadableProperty.class }, { IgnoringReadableProperty.class }
+        };
+    }
+
+    @Test(description = "Should omit the readable property if not declared or annotated as ignored.", dataProvider = "dataFormOmittingReadableProperty")
+    public void shouldOmitMissingOrIgnoredReadableProperty(Class<?> type) {
+        TypeDescription result = typeIntrospector.introspect(type, config);
+
+        Collection<WritableProperty> writableProperties = result.getWritableProperties();
+        assertEquals(writableProperties.size(), 1, "Should identify exactly 1 writable properties");
+        assertTrue(containsProperty(writableProperties, "property", String.class), "Should contain writable property of type String");
+
+        assertTrue(result.getReadableProperties().isEmpty(), "Description should not have any readable properties.");
+    }
+
+    public class WithoutWritableProperty {
+        private String property;
+
+        public String getProperty() {
+            return property;
+        }
+    }
+
+    public class IgnoringWritableProperty {
+        private String property;
+
+        public String getProperty() {
+            return property;
+        }
+
+        @IgnoreProperty
+        public void setProperty(String property) {
+            this.property = property;
+        }
+    }
+
+    @DataProvider
+    public Object[][] dataFormOmittingWritableProperty() {
+        return new Object[][] {
+                { WithoutWritableProperty.class }, { IgnoringWritableProperty.class }
+        };
+    }
+
+    @Test(description = "Should omit the writable property if not declared or annotated as ignored.", dataProvider = "dataFormOmittingWritableProperty")
+    public void shouldOmitMissingWritableProperty(Class<?> type) {
+        TypeDescription result = typeIntrospector.introspect(type, config);
+
+        Collection<ReadableProperty> readableProperties = result.getReadableProperties();
+        assertEquals(readableProperties.size(), 1, "Should identify exactly 1 readable properties");
+        assertTrue(containsProperty(readableProperties, "property", String.class), "Should contain readable property of type Double");
+
+        assertTrue(result.getWritableProperties().isEmpty(), "Description should not have any writable properties.");
     }
 
     private boolean containsProperty(Collection<? extends Property> properties, String propertyName, Class<?> type) {
