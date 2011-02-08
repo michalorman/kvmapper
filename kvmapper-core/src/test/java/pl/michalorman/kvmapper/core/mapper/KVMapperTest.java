@@ -46,6 +46,20 @@ public class KVMapperTest {
                 "\ntypeChar=" + String.valueOf(typeChar));
     }
 
+    @Test(description = "Should serialize primitive properties of an object and write result to an appendable.", dataProvider = "dataForTestOnPrimitives")
+    public void shouldDumpToAppendable(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
+                                       boolean typeBoolean, char typeChar) throws IOException {
+        Primitives target = new Primitives(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar);
+        String result = mapper.dump(target);
+        assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar));
+    }
+
     @DataProvider
     public Object[][] dataForTestOnTypes() {
         return new Object[][]{
@@ -71,12 +85,33 @@ public class KVMapperTest {
                 "\ntypeString=" + typeString);
     }
 
+    @Test(description = "Should serialize reference type properties of an object and write result to an appendable.", dataProvider = "dataForTestOnTypes")
+    public void shouldDumpToAppendable(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
+                                       Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
+        Types target = new Types(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar, typeString);
+        String result = mapper.dump(target);
+        assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar) +
+                "\ntypeString=" + typeString);
+    }
+
     @Test(description = "Should serialize object and write null properties as serialization result.")
     public void shouldWriteObjectWithNullProperties() throws IOException {
         Types target = new Types();
         StringBuilder builder = new StringBuilder();
         mapper.writeObject(builder, target);
         String result = builder.toString();
+        assertEquals(result, "typeShort=null\ntypeInt=null\ntypeLong=null\ntypeFloat=null\ntypeDouble=null\ntypeBoolean=null\ntypeChar=null\ntypeString=null");
+    }
+
+    @Test(description = "Should serialize object and write null properties as serialization result.")
+    public void shouldDumpWithNullProperties() throws IOException {
+        String result = mapper.dump(new Types());
         assertEquals(result, "typeShort=null\ntypeInt=null\ntypeLong=null\ntypeFloat=null\ntypeDouble=null\ntypeBoolean=null\ntypeChar=null\ntypeString=null");
     }
 

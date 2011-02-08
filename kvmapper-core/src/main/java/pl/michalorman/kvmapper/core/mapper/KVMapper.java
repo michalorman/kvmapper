@@ -93,6 +93,7 @@ public class KVMapper {
      *
      * @param output Object to which append the serialization result.
      * @param object Object to serialize.
+     *
      * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObject(Appendable output, Object object) throws IOException {
@@ -115,6 +116,7 @@ public class KVMapper {
      *
      * @param output  Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
+     *
      * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Object[] objects) throws IOException {
@@ -127,6 +129,7 @@ public class KVMapper {
      *
      * @param output  Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
+     *
      * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Iterable<?> objects) throws IOException {
@@ -139,6 +142,7 @@ public class KVMapper {
      *
      * @param output   Object to which append the serialization result.
      * @param iterator Iterator to use to iterate over each object to serialize.
+     *
      * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) throws IOException {
