@@ -1,6 +1,7 @@
 package pl.michalorman.kvmapper.core.mapper;
 
 import pl.michalorman.kvmapper.core.config.Config;
+import pl.michalorman.kvmapper.core.exception.KVMapperException;
 import pl.michalorman.kvmapper.core.introspect.DefaultTypeIntrospector;
 import pl.michalorman.kvmapper.core.introspect.TypeIntrospector;
 import pl.michalorman.kvmapper.core.serializer.DefaultKeyValuePairsSerializer;
@@ -92,6 +93,7 @@ public class KVMapper {
      *
      * @param output Object to which append the serialization result.
      * @param object Object to serialize.
+     * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObject(Appendable output, Object object) throws IOException {
         writeObjects(output, Arrays.asList(object));
@@ -113,6 +115,7 @@ public class KVMapper {
      *
      * @param output  Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
+     * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Object[] objects) throws IOException {
         writeObjects(output, Arrays.asList(objects));
@@ -124,6 +127,7 @@ public class KVMapper {
      *
      * @param output  Object to which append the serialization result.
      * @param objects Collection of objects to serialize.
+     * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Iterable<?> objects) throws IOException {
         writeObjects(output, objects.iterator());
@@ -135,6 +139,7 @@ public class KVMapper {
      *
      * @param output   Object to which append the serialization result.
      * @param iterator Iterator to use to iterate over each object to serialize.
+     * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) throws IOException {
         while (iterator.hasNext()) keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
@@ -181,7 +186,7 @@ public class KVMapper {
      *
      * @return Serialization result as string.
      */
-    public String dump(Object object) throws IOException {
+    public String dump(Object object) {
         return dumpAll(Arrays.asList(object));
     }
 
@@ -193,7 +198,7 @@ public class KVMapper {
      *
      * @return Serialization result as string.
      */
-    public String dumpAll(Object[] objects) throws IOException {
+    public String dumpAll(Object[] objects) {
         return dumpAll(Arrays.asList(objects));
     }
 
@@ -205,7 +210,7 @@ public class KVMapper {
      *
      * @return Serialization result as string.
      */
-    public String dumpAll(Iterable<?> objects) throws IOException {
+    public String dumpAll(Iterable<?> objects) {
         return dumpAll(objects.iterator());
     }
 
@@ -217,10 +222,14 @@ public class KVMapper {
      *
      * @return Serialization result as string.
      */
-    public String dumpAll(Iterator<?> iterator) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        writeObjects(builder, iterator);
-        return builder.toString();
+    public String dumpAll(Iterator<?> iterator) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            writeObjects(builder, iterator);
+            return builder.toString();
+        } catch (IOException ex) {
+            throw new KVMapperException("Failed to dump objects.", ex);
+        }
     }
 
     public void setConfig(Config config) {
