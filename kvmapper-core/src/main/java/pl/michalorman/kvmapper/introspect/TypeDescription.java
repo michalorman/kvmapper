@@ -4,10 +4,7 @@ import pl.michalorman.kvmapper.config.Config;
 import pl.michalorman.kvmapper.converter.ValueConverter;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static pl.michalorman.kvmapper.util.MethodUtils.*;
 
@@ -33,10 +30,33 @@ public class TypeDescription {
 
     /**
      * Returns the set of type properties.
+     *
      * @return set of properties.
      */
     public Set<Property> getProperties() {
         return new HashSet<Property>(properties.values());
+    }
+
+    /**
+     * Returns properties in the order specified by the <tt>order</tt> parameters.
+     * <p/>
+     * Properties with names specified in <tt>order</tt> parameter are added to the beginning
+     * of the collection in specified order, while remaining properties are added to the end
+     * of the collection in unspecified order.
+     *
+     * @param order Property names in order they should be returned.
+     *
+     * @return Colelction of ordered properties.
+     */
+    public Collection<Property> getPropertiesInOrder(String[] order) {
+        Map<String, Property> properties = new HashMap<String, Property>(this.properties); // copy mapped properties
+        List<Property> orderedProperties = new ArrayList<Property>(properties.size());
+        for (String propertyName : order) {
+            orderedProperties.add(properties.get(propertyName));
+            properties.remove(propertyName);
+        }
+        orderedProperties.addAll(properties.values());
+        return orderedProperties;
     }
 
     public void addProperty(String propertyName, Method method, ValueConverter valueConverter) {
@@ -56,4 +76,5 @@ public class TypeDescription {
         }
         return properties.get(propertyName);
     }
+
 }

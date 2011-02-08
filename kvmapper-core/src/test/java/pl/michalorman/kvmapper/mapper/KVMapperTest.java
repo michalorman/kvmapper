@@ -3,10 +3,11 @@ package pl.michalorman.kvmapper.mapper;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pl.michalorman.kvmapper.annotation.OrderProperties;
 
 import java.io.IOException;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 public class KVMapperTest {
 
@@ -36,13 +37,13 @@ public class KVMapperTest {
         StringBuilder builder = new StringBuilder();
         mapper.writeObject(builder, target);
         String result = builder.toString();
-        assertTrue(result.contains("typeShort=" + String.valueOf(typeShort) + "\n"), "Should contain key-value pair for a typeShort property");
-        assertTrue(result.contains("typeInt=" + String.valueOf(typeInt) + "\n"), "Should contain key-value pair for a typeInt property");
-        assertTrue(result.contains("typeLong=" + String.valueOf(typeLong) + "\n"), "Should contain key-value pair for a typeLong property");
-        assertTrue(result.contains("typeFloat=" + String.valueOf(typeFloat) + "\n"), "Should contain key-value pair for a typeFloat property");
-        assertTrue(result.contains("typeDouble=" + String.valueOf(typeDouble) + "\n"), "Should contain key-value pair for a typeDouble property");
-        assertTrue(result.contains("typeBoolean=" + String.valueOf(typeBoolean) + "\n"), "Should contain key-value pair for a typeBoolean property");
-        assertTrue(result.contains("typeChar=" + String.valueOf(typeChar) + "\n"), "Should contain key-value pair for a typeChar property");
+        assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar));
     }
 
     @DataProvider
@@ -60,14 +61,14 @@ public class KVMapperTest {
         StringBuilder builder = new StringBuilder();
         mapper.writeObject(builder, target);
         String result = builder.toString();
-        assertTrue(result.contains("typeShort=" + String.valueOf(typeShort) + "\n"), "Should contain key-value pair for a typeShort property");
-        assertTrue(result.contains("typeInt=" + String.valueOf(typeInt) + "\n"), "Should contain key-value pair for a typeInt property");
-        assertTrue(result.contains("typeLong=" + String.valueOf(typeLong) + "\n"), "Should contain key-value pair for a typeLong property");
-        assertTrue(result.contains("typeFloat=" + String.valueOf(typeFloat) + "\n"), "Should contain key-value pair for a typeFloat property");
-        assertTrue(result.contains("typeDouble=" + String.valueOf(typeDouble) + "\n"), "Should contain key-value pair for a typeDouble property");
-        assertTrue(result.contains("typeBoolean=" + String.valueOf(typeBoolean) + "\n"), "Should contain key-value pair for a typeBoolean property");
-        assertTrue(result.contains("typeChar=" + String.valueOf(typeChar) + "\n"), "Should contain key-value pair for a typeChar property");
-        assertTrue(result.contains("typeString=" + typeString + "\n"), "Should contain key-value pair for a typeString property");
+        assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar) +
+                "\ntypeString=" + typeString);
     }
 
     @Test(description = "Should serialize object and write null properties as serialization result.")
@@ -76,14 +77,7 @@ public class KVMapperTest {
         StringBuilder builder = new StringBuilder();
         mapper.writeObject(builder, target);
         String result = builder.toString();
-        assertTrue(result.contains("typeShort=null\n"), "Should contain key-value pair for a typeShort property");
-        assertTrue(result.contains("typeInt=null\n"), "Should contain key-value pair for a typeInt property");
-        assertTrue(result.contains("typeLong=null\n"), "Should contain key-value pair for a typeLong property");
-        assertTrue(result.contains("typeFloat=null\n"), "Should contain key-value pair for a typeFloat property");
-        assertTrue(result.contains("typeDouble=null\n"), "Should contain key-value pair for a typeDouble property");
-        assertTrue(result.contains("typeBoolean=null\n"), "Should contain key-value pair for a typeBoolean property");
-        assertTrue(result.contains("typeChar=null\n"), "Should contain key-value pair for a typeChar property");
-        assertTrue(result.contains("typeString=null\n"), "Should contain key-value pair for a typeString property");
+        assertEquals(result, "typeShort=null\ntypeInt=null\ntypeLong=null\ntypeFloat=null\ntypeDouble=null\ntypeBoolean=null\ntypeChar=null\ntypeString=null");
     }
 
     @Test(description = "Should serialize object using configured key-values and pairs separator.")
@@ -94,20 +88,14 @@ public class KVMapperTest {
         mapper.getConfig().setPairSeparator(',');
         mapper.writeObject(builder, target);
         String result = builder.toString();
-        assertTrue(result.contains("typeShort:null,"), "Should contain key-value pair for a typeShort property");
-        assertTrue(result.contains("typeInt:null,"), "Should contain key-value pair for a typeInt property");
-        assertTrue(result.contains("typeLong:null,"), "Should contain key-value pair for a typeLong property");
-        assertTrue(result.contains("typeFloat:null,"), "Should contain key-value pair for a typeFloat property");
-        assertTrue(result.contains("typeDouble:null,"), "Should contain key-value pair for a typeDouble property");
-        assertTrue(result.contains("typeBoolean:null,"), "Should contain key-value pair for a typeBoolean property");
-        assertTrue(result.contains("typeChar:null,"), "Should contain key-value pair for a typeChar property");
-        assertTrue(result.contains("typeString:null,"), "Should contain key-value pair for a typeString property");
+        assertEquals(result, "typeShort:null,typeInt:null,typeLong:null,typeFloat:null,typeDouble:null,typeBoolean:null,typeChar:null,typeString:null");
     }
 
     /*==========================================================================
         Classes used in tests
      */
 
+    @OrderProperties({ "typeShort", "typeInt", "typeLong", "typeFloat", "typeDouble", "typeBoolean", "typeChar" })
     public class Primitives {
         private short typeShort;
         private int typeInt;
@@ -187,6 +175,7 @@ public class KVMapperTest {
         }
     }
 
+    @OrderProperties({ "typeShort", "typeInt", "typeLong", "typeFloat", "typeDouble", "typeBoolean", "typeChar", "typeString" })
     public class Types {
         private Short typeShort;
         private Integer typeInt;
