@@ -70,6 +70,44 @@ public class KVMapperTest {
         assertTrue(result.contains("typeString=" + typeString + "\n"), "Should contain key-value pair for a typeString property");
     }
 
+    @Test(description = "Should serialize object and write null properties as serialization result.")
+    public void shouldWriteObjectWithNullProperties() throws IOException {
+        Types target = new Types();
+        StringBuilder builder = new StringBuilder();
+        mapper.writeObject(builder, target);
+        String result = builder.toString();
+        assertTrue(result.contains("typeShort=null\n"), "Should contain key-value pair for a typeShort property");
+        assertTrue(result.contains("typeInt=null\n"), "Should contain key-value pair for a typeInt property");
+        assertTrue(result.contains("typeLong=null\n"), "Should contain key-value pair for a typeLong property");
+        assertTrue(result.contains("typeFloat=null\n"), "Should contain key-value pair for a typeFloat property");
+        assertTrue(result.contains("typeDouble=null\n"), "Should contain key-value pair for a typeDouble property");
+        assertTrue(result.contains("typeBoolean=null\n"), "Should contain key-value pair for a typeBoolean property");
+        assertTrue(result.contains("typeChar=null\n"), "Should contain key-value pair for a typeChar property");
+        assertTrue(result.contains("typeString=null\n"), "Should contain key-value pair for a typeString property");
+    }
+
+    @Test(description = "Should serialize object using configured key-values and pairs separator.")
+    public void shouldWriteObjectUsingConfiguredSeparators() throws IOException {
+        Types target = new Types();
+        StringBuilder builder = new StringBuilder();
+        mapper.getConfig().setKeyValueSeparator(':');
+        mapper.getConfig().setPairSeparator(',');
+        mapper.writeObject(builder, target);
+        String result = builder.toString();
+        assertTrue(result.contains("typeShort:null,"), "Should contain key-value pair for a typeShort property");
+        assertTrue(result.contains("typeInt:null,"), "Should contain key-value pair for a typeInt property");
+        assertTrue(result.contains("typeLong:null,"), "Should contain key-value pair for a typeLong property");
+        assertTrue(result.contains("typeFloat:null,"), "Should contain key-value pair for a typeFloat property");
+        assertTrue(result.contains("typeDouble:null,"), "Should contain key-value pair for a typeDouble property");
+        assertTrue(result.contains("typeBoolean:null,"), "Should contain key-value pair for a typeBoolean property");
+        assertTrue(result.contains("typeChar:null,"), "Should contain key-value pair for a typeChar property");
+        assertTrue(result.contains("typeString:null,"), "Should contain key-value pair for a typeString property");
+    }
+
+    /*==========================================================================
+        Classes used in tests
+     */
+
     public class Primitives {
         private short typeShort;
         private int typeInt;
@@ -236,6 +274,22 @@ public class KVMapperTest {
 
         public void setTypeString(String typeString) {
             this.typeString = typeString;
+        }
+    }
+
+    public class Basic {
+        private String property;
+
+        public Basic(String property) {
+            this.property = property;
+        }
+
+        public String getProperty() {
+            return property;
+        }
+
+        public void setProperty(String property) {
+            this.property = property;
         }
     }
 }
