@@ -20,4 +20,14 @@ public class MethodUtils {
                 (method.getReturnType().equals(void.class) ||
                         method.getReturnType().equals(Void.class));
     }
+
+    public static Class<?> getType(Method method) {
+        Class<?> type = null;
+        if (hasSetterSignature(method)) {
+            type = method.getParameterTypes()[0];
+        } else if (hasGetterSignature(method)) {
+            type = method.getReturnType();
+        }
+        return type;
+    }
 }

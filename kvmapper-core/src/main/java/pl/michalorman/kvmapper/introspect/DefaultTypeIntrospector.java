@@ -3,6 +3,8 @@ package pl.michalorman.kvmapper.introspect;
 import pl.michalorman.kvmapper.annotation.ExceptProperties;
 import pl.michalorman.kvmapper.annotation.IgnoreProperty;
 import pl.michalorman.kvmapper.annotation.OnlyProperties;
+import pl.michalorman.kvmapper.config.Config;
+import pl.michalorman.kvmapper.converter.ValueConverterFactory;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -19,14 +21,17 @@ import static pl.michalorman.kvmapper.util.StringUtils.uncapitalized;
  * @version 1.0
  */
 public class DefaultTypeIntrospector implements TypeIntrospector {
-    public TypeDescription introspect(Class<?> type) {
-        TypeDescription description = new TypeDescription(type);
+
+    private ValueConverterFactory valueConverterFactory = new ValueConverterFactory();
+
+    public TypeDescription introspect(Class<?> type, Config config) {
+        TypeDescription description = new TypeDescription(type, config);
         Method[] methods = type.getMethods();
         for (Method method : methods) {
             if (isProperty(method)) {
                 String propertyName = getPropertyName(method);
-                if (isNotIgnored(method, propertyName, type)) {
-                    description.addProperty(propertyName, method);
+                if (isNotIgnored(method, propertyName, type) && config.isPropertyAllowed(propertyName)) {
+                    description.addProperty(propertyName, method, valueConverterFactory.getValueConverter(method));
                 }
             }
         }

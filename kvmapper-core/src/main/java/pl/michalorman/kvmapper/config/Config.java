@@ -1,5 +1,7 @@
 package pl.michalorman.kvmapper.config;
 
+import static pl.michalorman.kvmapper.util.ArrayUtils.includes;
+
 /**
  * The configuration to be used for serialization and deserialization.
  *
@@ -13,6 +15,12 @@ public class Config {
 
     /** Character that separates key-value pairs */
     private char pairSeparator = '\n';
+
+    /**
+     * Name of properties, that should be excluded from serialization and
+     * deserialization by default.
+     */
+    private String[] disallowedProperties = { "class" };
 
     public char getKeyValueSeparator() {
         return keyValueSeparator;
@@ -28,5 +36,17 @@ public class Config {
 
     public void setPairSeparator(char pairSeparator) {
         this.pairSeparator = pairSeparator;
+    }
+
+    public String[] getDisallowedProperties() {
+        return disallowedProperties;
+    }
+
+    public void setDisallowedProperties(String[] disallowedProperties) {
+        this.disallowedProperties = disallowedProperties;
+    }
+
+    public boolean isPropertyAllowed(String propertyName) {
+        return !includes(disallowedProperties, propertyName);
     }
 }

@@ -21,18 +21,18 @@ public class DefaultKeyValuePairsSerializer implements KeyValuePairsSerializer {
     private Map<Class<?>, TypeDescription> descriptions = new HashMap<Class<?>, TypeDescription>();
 
     public void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector) throws IOException {
-        TypeDescription description = getTypeDescription(object.getClass(), typeIntrospector);
+        TypeDescription description = getTypeDescription(object.getClass(), typeIntrospector, config);
         for (Property property : description.getProperties()) {
             output.append(property.getName());
             output.append(config.getKeyValueSeparator());
-            output.append(property.getConvertedValue(object));
+            output.append(property.getValue(object));
             output.append(config.getPairSeparator());
         }
     }
 
-    private TypeDescription getTypeDescription(Class<?> type, TypeIntrospector typeIntrospector) {
+    private TypeDescription getTypeDescription(Class<?> type, TypeIntrospector typeIntrospector, Config config) {
         if (!descriptions.containsKey(type)) {
-            descriptions.put(type, typeIntrospector.introspect(type));
+            descriptions.put(type, typeIntrospector.introspect(type, config));
         }
         return descriptions.get(type);
     }

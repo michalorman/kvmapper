@@ -1,5 +1,10 @@
 package pl.michalorman.kvmapper.introspect;
 
+import pl.michalorman.kvmapper.config.Config;
+import pl.michalorman.kvmapper.converter.ValueConverter;
+import pl.michalorman.kvmapper.exception.KVMapperException;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -21,18 +26,35 @@ public class Property {
     /** Method to get property value. */
     private Method getterMethod;
 
-    public Property(String name) {
+    private ValueConverter valueConverter;
+
+    /** Current framework configuration */
+    private Config config;
+
+    public Property(String name, Config config) {
         this.name = name;
+        this.config = config;
     }
 
-    /**
-     *
-     *
-     * @param target
-     * @param arg
-     */
     public void setValue(Object target, String arg) {
+        try {
+            setterMethod.invoke(target, valueConverter.fromString(arg, setterMethod, config));
+        } catch (IllegalAccessException e) {
+            throw new KVMapperException("Failed to invoke setter method.", e);
+        } catch (InvocationTargetException e) {
+            throw new KVMapperException("Failed to invoke setter method.", e);
+        }
+    }
 
+    @SuppressWarnings({ "unchecked" })
+    public String getValue(Object target) {
+        try {
+            return valueConverter.toString(getterMethod.invoke(target), getterMethod, config);
+        } catch (IllegalAccessException e) {
+            throw new KVMapperException("Failed to invoke getter method.", e);
+        } catch (InvocationTargetException e) {
+            throw new KVMapperException("Failed to invoke getter method.", e);
+        }
     }
 
     public String getName() {
@@ -55,10 +77,6 @@ public class Property {
         this.getterMethod = getterMethod;
     }
 
-    public String getConvertedValue(Object object) {
-        return null;
-    }
-
     public void setType(Class<?> type) {
         this.type = type;
     }
@@ -76,5 +94,9 @@ public class Property {
     @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
+    }
+
+    public void setValueConverter(ValueConverter valueConverter) {
+        this.valueConverter = valueConverter;
     }
 }
