@@ -3,7 +3,7 @@ package pl.michalorman.kvmapper.serializer;
 
 import pl.michalorman.kvmapper.annotation.OrderProperties;
 import pl.michalorman.kvmapper.config.Config;
-import pl.michalorman.kvmapper.introspect.Property;
+import pl.michalorman.kvmapper.introspect.ReadableProperty;
 import pl.michalorman.kvmapper.introspect.TypeDescription;
 import pl.michalorman.kvmapper.introspect.TypeIntrospector;
 
@@ -25,9 +25,9 @@ public class DefaultKeyValuePairsSerializer implements KeyValuePairsSerializer {
 
     public void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector) throws IOException {
         TypeDescription description = getTypeDescription(object.getClass(), typeIntrospector, config);
-        Iterator<Property> iterator = getProperties(object.getClass(), description).iterator();
+        Iterator<ReadableProperty> iterator = getProperties(object.getClass(), description).iterator();
         while (iterator.hasNext()) {
-            Property property = iterator.next();
+            ReadableProperty property = iterator.next();
             output.append(property.getName());
             output.append(config.getKeyValueSeparator());
             output.append(property.getValue(object));
@@ -37,10 +37,10 @@ public class DefaultKeyValuePairsSerializer implements KeyValuePairsSerializer {
         }
     }
 
-    private Collection<Property> getProperties(Class<?> type, TypeDescription description) {
+    private Collection<ReadableProperty> getProperties(Class<?> type, TypeDescription description) {
         return !type.isAnnotationPresent(OrderProperties.class) ?
-                description.getProperties() :
-                description.getPropertiesInOrder(type.getAnnotation(OrderProperties.class).value());
+                description.getReadableProperties() :
+                description.getReadablePropertiesInOrder(type.getAnnotation(OrderProperties.class).value());
     }
 
     private TypeDescription getTypeDescription(Class<?> type, TypeIntrospector typeIntrospector, Config config) {

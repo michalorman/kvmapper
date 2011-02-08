@@ -49,10 +49,16 @@ public class DefaultTypeIntrospectorTest {
     @Test(description = "Should correctly identify properties during introspection.")
     public void shouldIntrospectProperties() {
         TypeDescription result = typeIntrospector.introspect(WithProperties.class, config);
-        Collection<Property> properties = result.getProperties();
-        assertEquals(properties.size(), 2, "Should identify exactly 2 properties");
-        assertTrue(containsProperty(properties, "stringProperty", String.class), "Should contain 'stringProperty' of type String");
-        assertTrue(containsProperty(properties, "booleanProperty", Boolean.class), "Should contain 'booleanProperty' of type Boolean");
+
+        Collection<ReadableProperty> readableProperties = result.getReadableProperties();
+        assertEquals(readableProperties.size(), 2, "Should identify exactly 2 readable properties");
+        assertTrue(containsProperty(readableProperties, "stringProperty", String.class), "Should contain readable 'stringProperty' property of type String");
+        assertTrue(containsProperty(readableProperties, "booleanProperty", Boolean.class), "Should contain readable 'booleanProperty' property of type Boolean");
+
+        Collection<WritableProperty> writableProperties = result.getWritableProperties();
+        assertEquals(writableProperties.size(), 2, "Should identify exactly 2 writable properties");
+        assertTrue(containsProperty(writableProperties, "stringProperty", String.class), "Should contain writable 'stringProperty' property of type String");
+        assertTrue(containsProperty(writableProperties, "booleanProperty", Boolean.class), "Should contain writable 'booleanProperty' property of type Boolean");
     }
 
     public class WithPrimitiveProperties {
@@ -79,10 +85,16 @@ public class DefaultTypeIntrospectorTest {
     @Test(description = "Should correctly identify primitive properties during introspection.")
     public void shouldIntrospectPrimitiveProperties() {
         TypeDescription result = typeIntrospector.introspect(WithPrimitiveProperties.class, config);
-        Collection<Property> properties = result.getProperties();
-        assertEquals(properties.size(), 2, "Should identify exactly 2 properties");
-        assertTrue(containsProperty(properties, "doubleProperty", double.class), "Should contain 'doubleProperty' of type Double");
-        assertTrue(containsProperty(properties, "booleanProperty", boolean.class), "Should contain 'booleanProperty' of type Boolean");
+
+        Collection<ReadableProperty> readableProperties = result.getReadableProperties();
+        assertEquals(readableProperties.size(), 2, "Should identify exactly 2 readable properties");
+        assertTrue(containsProperty(readableProperties, "doubleProperty", double.class), "Should contain readable 'doubleProperty' property of type Double");
+        assertTrue(containsProperty(readableProperties, "booleanProperty", boolean.class), "Should contain readable 'booleanProperty' property of type Boolean");
+
+        Collection<WritableProperty> writableProperties = result.getWritableProperties();
+        assertEquals(writableProperties.size(), 2, "Should identify exactly 2 writable properties");
+        assertTrue(containsProperty(writableProperties, "doubleProperty", double.class), "Should contain writable 'doubleProperty' property of type Double");
+        assertTrue(containsProperty(writableProperties, "booleanProperty", boolean.class), "Should contain writable 'booleanProperty' property of type Boolean");
     }
 
     public class WithoutProperties {
@@ -108,10 +120,15 @@ public class DefaultTypeIntrospectorTest {
     @Test(description = "Should omit other fields and methods which are not properties during introspection.")
     public void shouldOmitOtherFieldsAndMethods() {
         TypeDescription result = typeIntrospector.introspect(WithoutProperties.class, config);
-        assertTrue(result.getProperties().isEmpty(), "Description should not have any properties.");
+        assertTrue(result.getReadableProperties().isEmpty(), "Description should not have any readable properties.");
+        assertTrue(result.getWritableProperties().isEmpty(), "Description should not have any writable properties.");
     }
 
-    private boolean containsProperty(Collection<Property> properties, String propertyName, Class<?> type) {
+    public class IgnoredProperty {
+
+    }
+
+    private boolean containsProperty(Collection<? extends Property> properties, String propertyName, Class<?> type) {
         for (Property property : properties) {
             if (property.getName().equals(propertyName) && property.getType().equals(type)) {
                 return true;

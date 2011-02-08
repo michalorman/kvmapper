@@ -18,8 +18,11 @@ public class TypeDescription {
     /** Type this description concerns. */
     private Class<?> type;
 
-    /** Maps type's properties. */
-    private Map<String, Property> properties = new HashMap<String, Property>();
+    /** Properties that are eligible for being read (while serializing). */
+    private Map<String, ReadableProperty> readableProperties = new HashMap<String, ReadableProperty>();
+
+    /** Properties that are eligible for being overwritten (while deserializing). */
+    private Map<String, WritableProperty> writableProperties = new HashMap<String, WritableProperty>();
 
     private Config config;
 
@@ -29,16 +32,25 @@ public class TypeDescription {
     }
 
     /**
-     * Returns the set of type properties.
+     * Returns the collection of readable properties.
      *
-     * @return set of properties.
+     * @return readable properties.
      */
-    public Set<Property> getProperties() {
-        return new HashSet<Property>(properties.values());
+    public Collection<ReadableProperty> getReadableProperties() {
+        return readableProperties.values();
     }
 
     /**
-     * Returns properties in the order specified by the <tt>order</tt> parameters.
+     * Returns the collection of writable properties.
+     *
+     * @return writable properties.
+     */
+    public Collection<WritableProperty> getWritableProperties() {
+        return writableProperties.values();
+    }
+
+    /**
+     * Returns readable properties in the order specified by the <tt>order</tt> parameters.
      * <p/>
      * Properties with names specified in <tt>order</tt> parameter are added to the beginning
      * of the collection in specified order, while remaining properties are added to the end
@@ -48,9 +60,13 @@ public class TypeDescription {
      *
      * @return Colelction of ordered properties.
      */
-    public Collection<Property> getPropertiesInOrder(String[] order) {
-        Map<String, Property> properties = new HashMap<String, Property>(this.properties); // copy mapped properties
-        List<Property> orderedProperties = new ArrayList<Property>(properties.size());
+    public Collection<ReadableProperty> getReadablePropertiesInOrder(String[] order) {
+        return getPropertiesInOrder(order, readableProperties);
+    }
+
+    private <T extends Property> Collection<T> getPropertiesInOrder(String[] order, Map<String, T> mappedProperties) {
+        Map<String, T> properties = new HashMap<String, T>(mappedProperties); // copy mapped properties
+        List<T> orderedProperties = new ArrayList<T>(properties.size());
         for (String propertyName : order) {
             if (properties.containsKey(propertyName)) {
                 orderedProperties.add(properties.get(propertyName));
@@ -62,21 +78,34 @@ public class TypeDescription {
     }
 
     public void addProperty(String propertyName, Method method, ValueConverter valueConverter) {
-        Property property = getProperty(propertyName);
-        property.setValueConverter(valueConverter);
-        property.setType(getType(method));
+        Property property = null;
         if (hasSetterSignature(method)) {
-            property.setSetterMethod(method);
+            WritableProperty writableProperty = getOrCreateWritableProperty(propertyName);
+            writableProperty.setSetterMethod(method);
+            property = writableProperty;
         } else if (hasGetterSignature(method)) {
-            property.setGetterMethod(method);
+            ReadableProperty readableProperty = getOrCreateReadableProperty(propertyName);
+            readableProperty.setGetterMethod(method);
+            property = readableProperty;
+        }
+        // apply common properties
+        if (property != null) {
+            property.setType(getType(method));
+            property.setValueConverter(valueConverter);
         }
     }
 
-    private Property getProperty(String propertyName) {
-        if (!properties.containsKey(propertyName)) {
-            properties.put(propertyName, new Property(propertyName, config));
+    private ReadableProperty getOrCreateReadableProperty(String propertyName) {
+        if (!readableProperties.containsKey(propertyName)) {
+            readableProperties.put(propertyName, new ReadableProperty(propertyName, config));
         }
-        return properties.get(propertyName);
+        return readableProperties.get(propertyName);
     }
 
+    private WritableProperty getOrCreateWritableProperty(String propertyName) {
+        if (!writableProperties.containsKey(propertyName)) {
+            writableProperties.put(propertyName, new WritableProperty(propertyName, config));
+        }
+        return writableProperties.get(propertyName);
+    }
 }
