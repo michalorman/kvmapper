@@ -6,6 +6,8 @@ import org.testng.annotations.Test;
 import pl.michalorman.kvmapper.core.annotation.OrderProperties;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.testng.Assert.assertEquals;
 
@@ -152,6 +154,35 @@ public class KVMapperTest {
         mapper.writeObjects(builder, objects);
         String result = builder.toString();
         assertEquals(result, "propertyA=valueA\npropertyB=valueB\npropertyC=valueC");
+    }
+
+    @Test(description = "Should serialize all objects given in an array.")
+    public void shoulDumpFromArray() throws IOException {
+        Object[] objects = new Object[]{ new ObjectA("valueA"), new ObjectB("valueB"), new ObjectC("valueC") };
+        String result = mapper.dumpAll(objects);
+        assertEquals(result, "propertyA=valueA\npropertyB=valueB\npropertyC=valueC");
+    }
+
+    @Test(description = "Should serialize all objects given in a collection.")
+    public void shouldWriteObjectsFromCollection() throws IOException {
+        Collection<Object> objects = new ArrayList<Object>();
+        objects.add(new ObjectC("valueC"));
+        objects.add(new ObjectB("valueB"));
+        objects.add(new ObjectA("valueA"));
+        StringBuilder builder = new StringBuilder();
+        mapper.writeObjects(builder, objects);
+        String result = builder.toString();
+        assertEquals(result, "propertyC=valueC\npropertyB=valueB\npropertyA=valueA");
+    }
+
+    @Test(description = "Should serialize all objects given in a collection.")
+    public void shouldDumpFromCollection() throws IOException {
+        Collection<Object> objects = new ArrayList<Object>();
+        objects.add(new ObjectC("valueC"));
+        objects.add(new ObjectB("valueB"));
+        objects.add(new ObjectA("valueA"));
+        String result = mapper.dumpAll(objects);
+        assertEquals(result, "propertyC=valueC\npropertyB=valueB\npropertyA=valueA");
     }
 
     /*==========================================================================
