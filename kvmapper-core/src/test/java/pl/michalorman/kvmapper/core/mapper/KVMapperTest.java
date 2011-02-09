@@ -6,7 +6,10 @@ import org.testng.annotations.Test;
 import pl.michalorman.kvmapper.core.fixture.Primitives;
 import pl.michalorman.kvmapper.core.fixture.Types;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -63,6 +66,28 @@ public class KVMapperTest {
         assertEquals(result.getTypeChar(), typeChar, "should set value of 'typeChar' property");
     }
 
+    @Test(description = "Should deserialize object from stream input.", dataProvider = "dataForTestOnPrimitives")
+    public void shouldReadObjectFromStream(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
+                                           boolean typeBoolean, char typeChar) throws IOException {
+        String input = "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar);
+        InputStream istream = new ByteArrayInputStream(input.getBytes());
+        Primitives result = mapper.readObject(istream, Primitives.class);
+        assertNotNull(result, "Should return new instance.");
+        assertEquals(result.getTypeShort(), typeShort, "should set value of 'typeShort' property");
+        assertEquals(result.getTypeInt(), typeInt, "should set value of 'typeInt' property");
+        assertEquals(result.getTypeLong(), typeLong, "should set value of 'typeLong' property");
+        assertEquals(result.getTypeFloat(), typeFloat, "should set value of 'typeFloat' property");
+        assertEquals(result.getTypeDouble(), typeDouble, "should set value of 'typeDouble' property");
+        assertEquals(result.isTypeBoolean(), typeBoolean, "should set value of 'typeBoolean' property");
+        assertEquals(result.getTypeChar(), typeChar, "should set value of 'typeChar' property");
+    }
+
     @Test(description = "Should deserialize object from string input.", dataProvider = "dataForTestOnTypes")
     public void shouldReadObjectFromString(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
                                            Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
@@ -76,6 +101,34 @@ public class KVMapperTest {
                 "\ntypeString=" + typeString;
         StringBuilder builder = new StringBuilder(input);
         Types result = mapper.readObject(builder, Types.class);
+        assertNotNull(result, "Should return new instance.");
+        assertEquals(result.getTypeShort(), typeShort, "should set value of 'typeShort' property");
+        assertEquals(result.getTypeInt(), typeInt, "should set value of 'typeInt' property");
+        assertEquals(result.getTypeLong(), typeLong, "should set value of 'typeLong' property");
+        assertEquals(result.getTypeFloat(), typeFloat, "should set value of 'typeFloat' property");
+        assertEquals(result.getTypeDouble(), typeDouble, "should set value of 'typeDouble' property");
+        assertEquals(result.getTypeBoolean(), typeBoolean, "should set value of 'typeBoolean' property");
+        if (typeChar.equals(Character.MIN_VALUE)) {
+            assertNull(result.getTypeChar());
+        } else {
+            assertEquals(result.getTypeChar(), typeChar, "should set value of 'typeChar' property");
+        }
+        assertEquals(result.getTypeString(), typeString, "should set value of 'typeString' property");
+    }
+
+    @Test(description = "Should deserialize object from stream input.", dataProvider = "dataForTestOnTypes")
+    public void shouldReadObjectFromStream(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
+                                           Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
+        String input = "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar) +
+                "\ntypeString=" + typeString;
+        InputStream istream = new ByteArrayInputStream(input.getBytes());
+        Types result = mapper.readObject(istream, Types.class);
         assertNotNull(result, "Should return new instance.");
         assertEquals(result.getTypeShort(), typeShort, "should set value of 'typeShort' property");
         assertEquals(result.getTypeInt(), typeInt, "should set value of 'typeInt' property");
@@ -112,9 +165,25 @@ public class KVMapperTest {
                 "\ntypeChar=" + String.valueOf(typeChar));
     }
 
+    @Test(description = "Should serialize primitive properties of an object and write result to an output stream.", dataProvider = "dataForTestOnPrimitives")
+    public void shouldWriteObjectToOutputStream(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
+                                                boolean typeBoolean, char typeChar) throws IOException {
+        Primitives target = new Primitives(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar);
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+        mapper.writeObject(ostream, target);
+        String result = ostream.toString();
+        assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar));
+    }
+
     @Test(description = "Should serialize primitive properties of an object and write result to an appendable.", dataProvider = "dataForTestOnPrimitives")
-    public void shouldDumpToAppendable(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
-                                       boolean typeBoolean, char typeChar) throws IOException {
+    public void shouldDump(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
+                           boolean typeBoolean, char typeChar) throws IOException {
         Primitives target = new Primitives(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar);
         String result = mapper.dump(target);
         assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
@@ -143,9 +212,26 @@ public class KVMapperTest {
                 "\ntypeString=" + typeString);
     }
 
+    @Test(description = "Should serialize reference type properties of an object and write result to an output stream.", dataProvider = "dataForTestOnTypes")
+    public void shouldWriteObjectTooOutputStream(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
+                                                 Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
+        Types target = new Types(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar, typeString);
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+        mapper.writeObject(ostream, target);
+        String result = ostream.toString();
+        assertEquals(result, "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar) +
+                "\ntypeString=" + typeString);
+    }
+
     @Test(description = "Should serialize reference type properties of an object and write result to an appendable.", dataProvider = "dataForTestOnTypes")
-    public void shouldDumpToAppendable(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
-                                       Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
+    public void shouldDump(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
+                           Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
         Types target = new Types(typeShort, typeInt, typeLong, typeFloat, typeDouble, typeBoolean, typeChar, typeString);
         String result = mapper.dump(target);
         assertEquals(result, "typeShort=" + String.valueOf(typeShort) +

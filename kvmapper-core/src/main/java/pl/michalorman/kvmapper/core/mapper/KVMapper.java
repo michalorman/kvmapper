@@ -9,10 +9,7 @@ import pl.michalorman.kvmapper.core.parser.KeyValuePairsParser;
 import pl.michalorman.kvmapper.core.serializer.DefaultKeyValuePairsSerializer;
 import pl.michalorman.kvmapper.core.serializer.KeyValuePairsSerializer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -112,8 +109,10 @@ public class KVMapper {
      *
      * @param output Object to which write the output.
      * @param object Object to serialize.
+     *
+     * @throws java.io.IOException thrown if any errors occurs while writing to output stream.
      */
-    public void writeObject(OutputStream output, Object object) {
+    public void writeObject(OutputStream output, Object object) throws IOException {
         writeObjects(output, Arrays.asList(object));
     }
 
@@ -153,7 +152,9 @@ public class KVMapper {
      * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) throws IOException {
-        keyValuePairsSerializer.serialize(output, iterator, config, typeIntrospector);
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+        writeObjects(ostream, iterator);
+        output.append(ostream.toString());
     }
 
     /**
@@ -162,8 +163,10 @@ public class KVMapper {
      *
      * @param output  Object to which write the serialization result.
      * @param objects Collection of objects to serialize.
+     *
+     * @throws java.io.IOException thrown if any errors occurs while writing to output stream.
      */
-    public void writeObjects(OutputStream output, Object[] objects) {
+    public void writeObjects(OutputStream output, Object[] objects) throws IOException {
         writeObjects(output, Arrays.asList(objects));
     }
 
@@ -173,8 +176,10 @@ public class KVMapper {
      *
      * @param output  Object to which write the serialization result.
      * @param objects Collection of objects to serialize.
+     *
+     * @throws java.io.IOException thrown if any errors occurs while writing to output stream.
      */
-    public void writeObjects(OutputStream output, Iterable<?> objects) {
+    public void writeObjects(OutputStream output, Iterable<?> objects) throws IOException {
         writeObjects(output, objects.iterator());
     }
 
@@ -184,10 +189,11 @@ public class KVMapper {
      *
      * @param output   Object to which write the serialization result.
      * @param iterator Object to use to iterate over each object to serialize.
+     *
+     * @throws java.io.IOException thrown if any errors occurs while writing to output stream.
      */
-    public void writeObjects(OutputStream output, Iterator<?> iterator) {
-        // TODO: implement body
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public void writeObjects(OutputStream output, Iterator<?> iterator) throws IOException {
+        keyValuePairsSerializer.serialize(output, iterator, config, typeIntrospector);
     }
 
     /**

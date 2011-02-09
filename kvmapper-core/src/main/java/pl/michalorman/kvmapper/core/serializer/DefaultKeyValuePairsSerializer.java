@@ -8,6 +8,7 @@ import pl.michalorman.kvmapper.core.introspect.TypeDescription;
 import pl.michalorman.kvmapper.core.introspect.TypeIntrospector;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,23 +24,23 @@ public class DefaultKeyValuePairsSerializer implements KeyValuePairsSerializer {
     /** Buffers the descriptions of type being introspected. */
     private Map<Class<?>, TypeDescription> descriptions = new HashMap<Class<?>, TypeDescription>();
 
-    public void serialize(Appendable output, Iterator<?> iterator, Config config, TypeIntrospector typeIntrospector) throws IOException {
+    public void serialize(OutputStream output, Iterator<?> iterator, Config config, TypeIntrospector typeIntrospector) throws IOException {
         while (iterator.hasNext()) serialize(output, iterator.next(), config, typeIntrospector, !iterator.hasNext());
     }
 
-    private void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector, boolean isLastElement) throws IOException {
+    private void serialize(OutputStream output, Object object, Config config, TypeIntrospector typeIntrospector, boolean isLastElement) throws IOException {
         TypeDescription description = getTypeDescription(object.getClass(), typeIntrospector, config);
         Iterator<ReadableProperty> iterator = getProperties(object.getClass(), description).iterator();
         while (iterator.hasNext()) {
             ReadableProperty property = iterator.next();
-            output.append(property.getName());
-            output.append(config.getKeyValueSeparator());
-            output.append(property.getValue(object));
+            output.write(property.getName().getBytes());
+            output.write(config.getKeyValueSeparator());
+            output.write(property.getValue(object).getBytes());
             if (iterator.hasNext()) {
-                output.append(config.getPairSeparator());
+                output.write(config.getPairSeparator());
             }
         }
-        if (!isLastElement) output.append(config.getPairSeparator());
+        if (!isLastElement) output.write(config.getPairSeparator());
     }
 
     private Collection<ReadableProperty> getProperties(Class<?> type, TypeDescription description) {
