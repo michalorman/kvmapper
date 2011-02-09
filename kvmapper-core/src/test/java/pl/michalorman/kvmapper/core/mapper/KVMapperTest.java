@@ -145,6 +145,15 @@ public class KVMapperTest {
         assertEquals(result, expectedResult);
     }
 
+    @Test(description = "Should serialize all objects given in an array.")
+    public void shouldWriteObjectsFromArray() throws IOException {
+        Object[] objects = new Object[]{ new ObjectA("valueA"), new ObjectB("valueB"), new ObjectC("valueC") };
+        StringBuilder builder = new StringBuilder();
+        mapper.writeObjects(builder, objects);
+        String result = builder.toString();
+        assertEquals(result, "propertyA=valueA\npropertyB=valueB\npropertyC=valueC");
+    }
+
     /*==========================================================================
         Classes used in tests
      */
@@ -320,19 +329,39 @@ public class KVMapperTest {
         }
     }
 
-    public class Basic {
-        private String property;
+    public class ObjectA {
+        private String propertyA;
 
-        public Basic(String property) {
-            this.property = property;
+        public ObjectA(String propertyA) {
+            this.propertyA = propertyA;
         }
 
-        public String getProperty() {
-            return property;
+        public String getPropertyA() {
+            return propertyA;
+        }
+    }
+
+    public class ObjectB {
+        private String propertyB;
+
+        public ObjectB(String propertyB) {
+            this.propertyB = propertyB;
         }
 
-        public void setProperty(String property) {
-            this.property = property;
+        public String getPropertyB() {
+            return propertyB;
+        }
+    }
+
+    public class ObjectC {
+        private String propertyC;
+
+        public ObjectC(String propertyC) {
+            this.propertyC = propertyC;
+        }
+
+        public String getPropertyC() {
+            return propertyC;
         }
     }
 }

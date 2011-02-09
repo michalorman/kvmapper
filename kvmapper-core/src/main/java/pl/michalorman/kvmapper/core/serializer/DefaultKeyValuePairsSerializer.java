@@ -23,7 +23,11 @@ public class DefaultKeyValuePairsSerializer implements KeyValuePairsSerializer {
     /** Buffers the descriptions of type being introspected. */
     private Map<Class<?>, TypeDescription> descriptions = new HashMap<Class<?>, TypeDescription>();
 
-    public void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector) throws IOException {
+    public void serialize(Appendable output, Iterator<?> iterator, Config config, TypeIntrospector typeIntrospector) throws IOException {
+        while (iterator.hasNext()) serialize(output, iterator.next(), config, typeIntrospector, !iterator.hasNext());
+    }
+
+    private void serialize(Appendable output, Object object, Config config, TypeIntrospector typeIntrospector, boolean isLastElement) throws IOException {
         TypeDescription description = getTypeDescription(object.getClass(), typeIntrospector, config);
         Iterator<ReadableProperty> iterator = getProperties(object.getClass(), description).iterator();
         while (iterator.hasNext()) {
@@ -35,6 +39,7 @@ public class DefaultKeyValuePairsSerializer implements KeyValuePairsSerializer {
                 output.append(config.getPairSeparator());
             }
         }
+        if (!isLastElement) output.append(config.getPairSeparator());
     }
 
     private Collection<ReadableProperty> getProperties(Class<?> type, TypeDescription description) {

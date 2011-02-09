@@ -146,7 +146,7 @@ public class KVMapper {
      * @throws java.io.IOException Thrown if appending to output fails.
      */
     public void writeObjects(Appendable output, Iterator<?> iterator) throws IOException {
-        while (iterator.hasNext()) keyValuePairsSerializer.serialize(output, iterator.next(), config, typeIntrospector);
+        keyValuePairsSerializer.serialize(output, iterator, config, typeIntrospector);
     }
 
     /**
