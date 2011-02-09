@@ -111,7 +111,7 @@ public class KVMapper {
     }
 
     /**
-     * Serializes provided collection of <tt>objects<tt> and appends the serialization result to provided
+     * Serializes provided collection of <tt>objects</tt> and appends the serialization result to provided
      * <tt>output</tt>.
      *
      * @param output  Object to which append the serialization result.
