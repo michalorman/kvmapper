@@ -17,6 +17,7 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class DefaultKeyValuePairsParser implements KeyValuePairsParser {
+    @SuppressWarnings({ "unchecked" })
     public <T> T parse(InputStream input, Class<T> type, Config config, TypeIntrospector typeIntrospector) throws IOException {
         TypeDescription typeDescription = typeIntrospector.introspect(type, config);
         Object instance = createInstance(type);
@@ -31,7 +32,7 @@ public class DefaultKeyValuePairsParser implements KeyValuePairsParser {
             // shall parser close the input? maybe an option in config?
             scanner.close();
         }
-        return null;
+        return (T) instance;
     }
 
     private <T> Object createInstance(Class<T> type) {

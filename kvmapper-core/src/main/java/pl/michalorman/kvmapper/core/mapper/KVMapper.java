@@ -59,8 +59,9 @@ public class KVMapper {
      * @param <T>   Type of object to be instantiated.
      *
      * @return New instance of specified <tt>type</tt>.
+     * @throws java.io.IOException thrown if errors while reading input occurs.
      */
-    public <T> T readObject(CharSequence input, Class<T> type) {
+    public <T> T readObject(CharSequence input, Class<T> type) throws IOException {
         return readObject(input.toString(), type);
     }
 
@@ -73,8 +74,9 @@ public class KVMapper {
      * @param <T>   Type of object to be instantiated.
      *
      * @return New instance of specified <tt>type</tt>.
+     * @throws java.io.IOException thrown if errors while reading input occurs.
      */
-    public <T> T readObject(String input, Class<T> type) {
+    public <T> T readObject(String input, Class<T> type) throws IOException {
         return readObject(new ByteArrayInputStream(input.getBytes()), type);
     }
 
@@ -87,8 +89,9 @@ public class KVMapper {
      * @param <T>   Type of object to be instantiated.
      *
      * @return New instance of specified <tt>type</tt>.
+     * @throws java.io.IOException thrown if errors while reading input occurs.
      */
-    public <T> T readObject(InputStream input, Class<T> type) {
+    public <T> T readObject(InputStream input, Class<T> type) throws IOException {
         return keyValuePairsParser.parse(input, type, config, typeIntrospector);
     }
 
