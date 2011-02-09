@@ -289,12 +289,21 @@ public class KVMapperTest {
         assertEquals(result, expectedResult);
     }
 
-    @Test(description = "Should serialize all objects given in an array.")
-    public void shouldWriteObjectsFromArray() throws IOException {
+    @Test(description = "Should serialize all objects given in an array and write result to appendable.")
+    public void shouldWriteObjectsFromArrayToAppendable() throws IOException {
         Object[] objects = new Object[]{ new ObjectA("valueA"), new ObjectB("valueB"), new ObjectC("valueC") };
         StringBuilder builder = new StringBuilder();
         mapper.writeObjects(builder, objects);
         String result = builder.toString();
+        assertEquals(result, "propertyA=valueA\npropertyB=valueB\npropertyC=valueC");
+    }
+
+    @Test(description = "Should serialize all objects given in an array and write result to output stream.")
+    public void shouldWriteObjectsFromArrayToOutputStream() throws IOException {
+        Object[] objects = new Object[]{ new ObjectA("valueA"), new ObjectB("valueB"), new ObjectC("valueC") };
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+        mapper.writeObjects(ostream, objects);
+        String result = ostream.toString();
         assertEquals(result, "propertyA=valueA\npropertyB=valueB\npropertyC=valueC");
     }
 
@@ -305,8 +314,8 @@ public class KVMapperTest {
         assertEquals(result, "propertyA=valueA\npropertyB=valueB\npropertyC=valueC");
     }
 
-    @Test(description = "Should serialize all objects given in a collection.")
-    public void shouldWriteObjectsFromCollection() throws IOException {
+    @Test(description = "Should serialize all objects given in a collection and write result to appendable.")
+    public void shouldWriteObjectsFromCollectionToAppendable() throws IOException {
         Collection<Object> objects = new ArrayList<Object>();
         objects.add(new ObjectC("valueC"));
         objects.add(new ObjectB("valueB"));
@@ -314,6 +323,18 @@ public class KVMapperTest {
         StringBuilder builder = new StringBuilder();
         mapper.writeObjects(builder, objects);
         String result = builder.toString();
+        assertEquals(result, "propertyC=valueC\npropertyB=valueB\npropertyA=valueA");
+    }
+
+    @Test(description = "Should serialize all objects given in a collection and write result to output stream.")
+    public void shouldWriteObjectsFromCollectionToOutputStream() throws IOException {
+        Collection<Object> objects = new ArrayList<Object>();
+        objects.add(new ObjectC("valueC"));
+        objects.add(new ObjectB("valueB"));
+        objects.add(new ObjectA("valueA"));
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+        mapper.writeObjects(ostream, objects);
+        String result = ostream.toString();
         assertEquals(result, "propertyC=valueC\npropertyB=valueB\npropertyA=valueA");
     }
 
