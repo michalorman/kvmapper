@@ -52,7 +52,8 @@ public class KVMapperTest {
                 "\ntypeBoolean=" + String.valueOf(typeBoolean) +
                 "\ntypeChar=" + String.valueOf(typeChar) +
                 "\ntypeString=" + typeString;
-        Types result = mapper.readObject(input, Types.class);
+        StringBuilder builder = new StringBuilder(input);
+        Types result = mapper.readObject(builder, Types.class);
         assertNotNull(result, "Should return new instance.");
         assertEquals(result.getTypeShort(), typeShort, "should set value of 'typeShort' property");
         assertEquals(result.getTypeInt(), typeInt, "should set value of 'typeInt' property");
