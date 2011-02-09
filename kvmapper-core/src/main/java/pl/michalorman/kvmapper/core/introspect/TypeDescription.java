@@ -64,6 +64,30 @@ public class TypeDescription {
         return getPropertiesInOrder(order, readableProperties);
     }
 
+    /**
+     * Returns the writable property object corresponding to the specified <tt>propertyName</tt>
+     * parameter.
+     *
+     * @param propertyName Name of property to return.
+     *
+     * @return Writable property if mapped, otherwise <tt>null</tt>.
+     */
+    public WritableProperty getWritableProperty(String propertyName) {
+        return writableProperties.get(propertyName);
+    }
+
+    /**
+     * Returns <tt>true</tt> if this type description maps the writable property of specified
+     * name.
+     *
+     * @param propertyName Name of property to check.
+     *
+     * @return <tt>true</tt> if property is mapped, otherwise <tt>false</tt>.
+     */
+    public boolean hasWritableProperty(String propertyName) {
+        return writableProperties.containsKey(propertyName);
+    }
+
     private <T extends Property> Collection<T> getPropertiesInOrder(String[] order, Map<String, T> mappedProperties) {
         Map<String, T> properties = new HashMap<String, T>(mappedProperties); // copy mapped properties
         List<T> orderedProperties = new ArrayList<T>(properties.size());

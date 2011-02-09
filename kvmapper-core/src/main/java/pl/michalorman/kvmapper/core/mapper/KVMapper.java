@@ -4,9 +4,12 @@ import pl.michalorman.kvmapper.core.config.Config;
 import pl.michalorman.kvmapper.core.exception.KVMapperException;
 import pl.michalorman.kvmapper.core.introspect.DefaultTypeIntrospector;
 import pl.michalorman.kvmapper.core.introspect.TypeIntrospector;
+import pl.michalorman.kvmapper.core.parser.DefaultKeyValuePairsParser;
+import pl.michalorman.kvmapper.core.parser.KeyValuePairsParser;
 import pl.michalorman.kvmapper.core.serializer.DefaultKeyValuePairsSerializer;
 import pl.michalorman.kvmapper.core.serializer.KeyValuePairsSerializer;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +36,9 @@ public class KVMapper {
 
     /** Component performing object serialization. */
     private KeyValuePairsSerializer keyValuePairsSerializer = new DefaultKeyValuePairsSerializer();
+
+    /** Component creating objects based on the provided input. */
+    private KeyValuePairsParser keyValuePairsParser = new DefaultKeyValuePairsParser();
 
     /** Creates the <tt>KVMapper</tt> instance with default {@link Config} */
     public KVMapper() {
@@ -69,8 +75,7 @@ public class KVMapper {
      * @return New instance of specified <tt>type</tt>.
      */
     public <T> T readObject(String input, Class<T> type) {
-        // TODO: implement body
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return readObject(new ByteArrayInputStream(input.getBytes()), type);
     }
 
     /**
@@ -84,8 +89,7 @@ public class KVMapper {
      * @return New instance of specified <tt>type</tt>.
      */
     public <T> T readObject(InputStream input, Class<T> type) {
-        // TODO: implement body
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return keyValuePairsParser.parse(input, type, config, typeIntrospector);
     }
 
     /**
