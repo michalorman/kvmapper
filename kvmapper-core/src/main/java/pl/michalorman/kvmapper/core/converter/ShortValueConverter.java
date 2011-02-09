@@ -11,6 +11,10 @@ import java.lang.reflect.AnnotatedElement;
  * @version 1.0
  */
 public class ShortValueConverter extends JavaTypeValueConverter<Short> {
+    public ShortValueConverter(Short defaultValue) {
+        super(defaultValue);
+    }
+
     public Short getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Short.valueOf(value);
     }

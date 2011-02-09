@@ -11,6 +11,10 @@ import java.lang.reflect.AnnotatedElement;
  * @version 1.0
  */
 public class BooleanValueConverter extends JavaTypeValueConverter<Boolean> {
+    public BooleanValueConverter(Boolean defaultValue) {
+        super(defaultValue);
+    }
+
     public Boolean getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Boolean.valueOf(value);
     }

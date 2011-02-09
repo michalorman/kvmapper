@@ -11,6 +11,10 @@ import java.lang.reflect.AnnotatedElement;
  * @version 1.0
  */
 public class LongValueConverter extends JavaTypeValueConverter<Long> {
+    public LongValueConverter(Long defaultValue) {
+        super(defaultValue);
+    }
+
     public Long getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Long.valueOf(value);
     }

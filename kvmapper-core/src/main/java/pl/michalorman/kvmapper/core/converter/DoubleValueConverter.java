@@ -11,6 +11,10 @@ import java.lang.reflect.AnnotatedElement;
  * @version 1.0
  */
 public class DoubleValueConverter extends JavaTypeValueConverter<Double> {
+    public DoubleValueConverter(Double defaultValue) {
+        super(defaultValue);
+    }
+
     public Double getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Double.valueOf(value);
     }

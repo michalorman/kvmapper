@@ -11,6 +11,10 @@ import java.lang.reflect.AnnotatedElement;
  * @version 1.0
  */
 public class FloatValueConverter extends JavaTypeValueConverter<Float> {
+    public FloatValueConverter(Float defaultValue) {
+        super(defaultValue);
+    }
+
     public Float getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Float.valueOf(value);
     }

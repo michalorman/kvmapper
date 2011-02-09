@@ -24,23 +24,23 @@ public class ValueConverterFactory {
     }
 
     private void initPrimitiveConverters() {
-        defaultConverters.put(short.class, new ShortValueConverter());
-        defaultConverters.put(int.class, new IntegerValueConverter());
-        defaultConverters.put(long.class, new LongValueConverter());
-        defaultConverters.put(float.class, new FloatValueConverter());
-        defaultConverters.put(double.class, new DoubleValueConverter());
-        defaultConverters.put(boolean.class, new BooleanValueConverter());
-        defaultConverters.put(char.class, new CharacterValueConverter());
+        defaultConverters.put(short.class, new ShortValueConverter(Short.MIN_VALUE));
+        defaultConverters.put(int.class, new IntegerValueConverter(Integer.MIN_VALUE));
+        defaultConverters.put(long.class, new LongValueConverter(Long.MIN_VALUE));
+        defaultConverters.put(float.class, new FloatValueConverter(Float.MIN_VALUE));
+        defaultConverters.put(double.class, new DoubleValueConverter(Double.MIN_VALUE));
+        defaultConverters.put(boolean.class, new BooleanValueConverter(Boolean.FALSE));
+        defaultConverters.put(char.class, new CharacterValueConverter(Character.MIN_VALUE));
     }
 
     private void initTypeConverters() {
-        defaultConverters.put(Short.class, new ShortValueConverter());
-        defaultConverters.put(Integer.class, new IntegerValueConverter());
-        defaultConverters.put(Long.class, new LongValueConverter());
-        defaultConverters.put(Float.class, new FloatValueConverter());
-        defaultConverters.put(Double.class, new DoubleValueConverter());
-        defaultConverters.put(Boolean.class, new BooleanValueConverter());
-        defaultConverters.put(Character.class, new CharacterValueConverter());
+        defaultConverters.put(Short.class, new ShortValueConverter(null));
+        defaultConverters.put(Integer.class, new IntegerValueConverter(null));
+        defaultConverters.put(Long.class, new LongValueConverter(null));
+        defaultConverters.put(Float.class, new FloatValueConverter(null));
+        defaultConverters.put(Double.class, new DoubleValueConverter(null));
+        defaultConverters.put(Boolean.class, new BooleanValueConverter(null));
+        defaultConverters.put(Character.class, new CharacterValueConverter(null));
         defaultConverters.put(String.class, new StringValueConverter());
     }
 }

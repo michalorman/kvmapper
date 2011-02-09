@@ -11,6 +11,11 @@ import java.lang.reflect.AnnotatedElement;
  * @version 1.0
  */
 public class StringValueConverter extends JavaTypeValueConverter<String> {
+    public StringValueConverter() {
+        // strings are always objects thus default value is always null
+        super(null);
+    }
+
     public String getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return value;
     }

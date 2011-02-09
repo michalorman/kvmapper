@@ -41,6 +41,28 @@ public class KVMapperTest {
         Test deserialization
      */
 
+    @Test(description = "Should deserialize object from string input.", dataProvider = "dataForTestOnPrimitives")
+    public void shouldReadObjectFromString(short typeShort, int typeInt, long typeLong, float typeFloat, double typeDouble,
+                                           boolean typeBoolean, char typeChar) throws IOException {
+        String input = "typeShort=" + String.valueOf(typeShort) +
+                "\ntypeInt=" + String.valueOf(typeInt) +
+                "\ntypeLong=" + String.valueOf(typeLong) +
+                "\ntypeFloat=" + String.valueOf(typeFloat) +
+                "\ntypeDouble=" + String.valueOf(typeDouble) +
+                "\ntypeBoolean=" + String.valueOf(typeBoolean) +
+                "\ntypeChar=" + String.valueOf(typeChar);
+        StringBuilder builder = new StringBuilder(input);
+        Primitives result = mapper.readObject(builder, Primitives.class);
+        assertNotNull(result, "Should return new instance.");
+        assertEquals(result.getTypeShort(), typeShort, "should set value of 'typeShort' property");
+        assertEquals(result.getTypeInt(), typeInt, "should set value of 'typeInt' property");
+        assertEquals(result.getTypeLong(), typeLong, "should set value of 'typeLong' property");
+        assertEquals(result.getTypeFloat(), typeFloat, "should set value of 'typeFloat' property");
+        assertEquals(result.getTypeDouble(), typeDouble, "should set value of 'typeDouble' property");
+        assertEquals(result.isTypeBoolean(), typeBoolean, "should set value of 'typeBoolean' property");
+        assertEquals(result.getTypeChar(), typeChar, "should set value of 'typeChar' property");
+    }
+
     @Test(description = "Should deserialize object from string input.", dataProvider = "dataForTestOnTypes")
     public void shouldReadObjectFromString(Short typeShort, Integer typeInt, Long typeLong, Float typeFloat, Double typeDouble,
                                            Boolean typeBoolean, Character typeChar, String typeString) throws IOException {
