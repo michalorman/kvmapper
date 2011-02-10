@@ -2,7 +2,7 @@ package pl.michalorman.kvmapper.core.converter;
 
 import pl.michalorman.kvmapper.core.config.Config;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 /**
  * Value converter for {@link Character} type.
@@ -19,7 +19,7 @@ public class CharacterValueConverter extends JavaTypeValueConverter<Character> {
         this(null);
     }
 
-    public Character getFromString(String value, AnnotatedElement annotatedElement, Config config) {
+    public Character getFromString(String value, Method setter, Config config) {
         return value.charAt(0);
     }
 }

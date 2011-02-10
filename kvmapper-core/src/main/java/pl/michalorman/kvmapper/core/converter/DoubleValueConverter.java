@@ -2,7 +2,7 @@ package pl.michalorman.kvmapper.core.converter;
 
 import pl.michalorman.kvmapper.core.config.Config;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 /**
  * Value converter for {@link Double} type.
@@ -19,7 +19,7 @@ public class DoubleValueConverter extends JavaTypeValueConverter<Double> {
         this(null);
     }
 
-    public Double getFromString(String value, AnnotatedElement annotatedElement, Config config) {
+    public Double getFromString(String value, Method setter, Config config) {
         return Double.valueOf(value);
     }
 }

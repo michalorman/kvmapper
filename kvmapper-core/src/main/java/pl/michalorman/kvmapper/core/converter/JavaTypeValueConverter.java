@@ -2,7 +2,7 @@ package pl.michalorman.kvmapper.core.converter;
 
 import pl.michalorman.kvmapper.core.config.Config;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 import static pl.michalorman.kvmapper.core.util.StringUtils.isBlank;
 
@@ -19,13 +19,13 @@ public abstract class JavaTypeValueConverter<T> implements ValueConverter<T> {
         this.defaultValue = defaultValue;
     }
 
-    public String toString(T value, AnnotatedElement annotatedElement, Config config) {
+    public String toString(T value, Method getter, Config config) {
         return String.valueOf(value);
     }
 
-    public T fromString(String value, AnnotatedElement annotatedElement, Config config) {
-        return isBlank(value) ? defaultValue : getFromString(value, annotatedElement, config);
+    public T fromString(String value, Method setter, Config config) {
+        return isBlank(value) ? defaultValue : getFromString(value, setter, config);
     }
 
-    protected abstract T getFromString(String value, AnnotatedElement annotatedElement, Config config);
+    protected abstract T getFromString(String value, Method setter, Config config);
 }

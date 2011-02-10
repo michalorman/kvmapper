@@ -2,7 +2,7 @@ package pl.michalorman.kvmapper.core.converter;
 
 import pl.michalorman.kvmapper.core.config.Config;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 /**
  * Value converter for {@link Integer} type.
@@ -19,7 +19,7 @@ public class IntegerValueConverter extends JavaTypeValueConverter<Integer> {
         this(null);
     }
 
-    public Integer getFromString(String value, AnnotatedElement annotatedElement, Config config) {
+    public Integer getFromString(String value, Method setter, Config config) {
         return Integer.valueOf(value);
     }
 }

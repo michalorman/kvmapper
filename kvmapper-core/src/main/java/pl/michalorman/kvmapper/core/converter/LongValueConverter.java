@@ -2,7 +2,7 @@ package pl.michalorman.kvmapper.core.converter;
 
 import pl.michalorman.kvmapper.core.config.Config;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 /**
  * Value converter for {@link Long} type.
@@ -19,7 +19,7 @@ public class LongValueConverter extends JavaTypeValueConverter<Long> {
         this(null);
     }
 
-    public Long getFromString(String value, AnnotatedElement annotatedElement, Config config) {
+    public Long getFromString(String value, Method setter, Config config) {
         return Long.valueOf(value);
     }
 }

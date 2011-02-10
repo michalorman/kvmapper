@@ -5,15 +5,13 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pl.michalorman.kvmapper.core.config.Config;
 import pl.michalorman.kvmapper.core.exception.ValueConversionException;
-import pl.michalorman.kvmapper.core.fixture.AnnotatedWithDate;
-import pl.michalorman.kvmapper.core.fixture.Primitives;
-import pl.michalorman.kvmapper.core.fixture.Types;
-import pl.michalorman.kvmapper.core.fixture.WithDate;
+import pl.michalorman.kvmapper.core.fixture.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.ElementType;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -192,6 +190,14 @@ public class KVMapperTest {
         String input = "date=" + sdf.format(date);
         mapper.getConfig().setDateFormat(df);
         mapper.readObject(input, WithDate.class);
+    }
+
+    @Test(description = "Should deserialize enumerated property")
+    public void shouldDeserializeEnumeratedProperty() throws IOException {
+        String input = "elementType=CONSTRUCTOR";
+        WithEnum result = mapper.readObject(input, WithEnum.class);
+        assertNotNull(result);
+        assertEquals(result.getElementType(), ElementType.CONSTRUCTOR);
     }
 
 
@@ -423,6 +429,13 @@ public class KVMapperTest {
         mapper.setConfig(config);
         String result = mapper.dump(new AnnotatedWithDate(date));
         assertEquals(result, "date=" + new SimpleDateFormat("yyyy-MM-dd").format(date), "Should serialize date with annotated format");
+    }
+
+    @Test(description = "Should serialize enumerated property.")
+    public void shouldSerializeEnum() {
+        WithEnum target = new WithEnum(ElementType.FIELD);
+        String result = mapper.dump(target);
+        assertEquals(result, "elementType=FIELD");
     }
 
     /*==========================================================================

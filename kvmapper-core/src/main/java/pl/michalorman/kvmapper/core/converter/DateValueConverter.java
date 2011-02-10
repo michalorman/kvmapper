@@ -4,7 +4,7 @@ import pl.michalorman.kvmapper.core.annotation.DateFormat;
 import pl.michalorman.kvmapper.core.config.Config;
 import pl.michalorman.kvmapper.core.exception.ValueConversionException;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,9 +21,9 @@ public class DateValueConverter extends JavaTypeValueConverter<Date> {
     }
 
     @Override
-    public String toString(Date value, AnnotatedElement annotatedElement, Config config) {
-        if (annotatedElement.isAnnotationPresent(DateFormat.class)) {
-            java.text.DateFormat dateFormat = new SimpleDateFormat(annotatedElement.getAnnotation(DateFormat.class).value());
+    public String toString(Date value, Method getter, Config config) {
+        if (getter.isAnnotationPresent(DateFormat.class)) {
+            java.text.DateFormat dateFormat = new SimpleDateFormat(getter.getAnnotation(DateFormat.class).value());
             return dateFormat.format(value);
         }
         if (config.isDateFormatConfigured()) {
@@ -32,10 +32,10 @@ public class DateValueConverter extends JavaTypeValueConverter<Date> {
         return String.valueOf(value.getTime());
     }
 
-    protected Date getFromString(String value, AnnotatedElement annotatedElement, Config config) {
+    protected Date getFromString(String value, Method setter, Config config) {
         try {
-            if (annotatedElement.isAnnotationPresent(DateFormat.class)) {
-                java.text.DateFormat dateFormat = new SimpleDateFormat(annotatedElement.getAnnotation(DateFormat.class).value());
+            if (setter.isAnnotationPresent(DateFormat.class)) {
+                java.text.DateFormat dateFormat = new SimpleDateFormat(setter.getAnnotation(DateFormat.class).value());
                 return dateFormat.parse(value);
             }
             if (config.isDateFormatConfigured()) {

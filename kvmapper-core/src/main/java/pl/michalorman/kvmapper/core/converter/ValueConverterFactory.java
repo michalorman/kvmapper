@@ -1,5 +1,7 @@
 package pl.michalorman.kvmapper.core.converter;
 
+import pl.michalorman.kvmapper.core.util.MethodUtils;
+
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +23,10 @@ public class ValueConverterFactory {
 
     public ValueConverter getValueConverter(Method method) {
         // TODO: add instantiating value converter from the annotation
+        Class<?> type = MethodUtils.getType(method);
+        if (type.isEnum()) {
+            return defaultConverters.get(Enum.class);
+        }
         return defaultConverters.get(getType(method));
     }
 
@@ -44,5 +50,6 @@ public class ValueConverterFactory {
         defaultConverters.put(Character.class, new CharacterValueConverter());
         defaultConverters.put(String.class, new StringValueConverter());
         defaultConverters.put(Date.class, new DateValueConverter());
+        defaultConverters.put(Enum.class, new EnumValueConverter());
     }
 }
