@@ -1,5 +1,7 @@
 package pl.michalorman.kvmapper.core.config;
 
+import java.text.DateFormat;
+
 import static pl.michalorman.kvmapper.core.util.ArrayUtils.includes;
 
 /**
@@ -15,6 +17,12 @@ public class Config {
 
     /** Character that separates key-value pairs */
     private char pairSeparator = '\n';
+
+    /**
+     * Date format to be used when serializing dates. By default no format is used,
+     * which means that the dates are serialized as milliseconds (long value).
+     */
+    private DateFormat dateFormat = null;
 
     /**
      * Name of properties, that should be excluded from serialization and
@@ -48,5 +56,17 @@ public class Config {
 
     public boolean isPropertyAllowed(String propertyName) {
         return !includes(disallowedProperties, propertyName);
+    }
+
+    public DateFormat getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public boolean isDateFormatConfigured() {
+        return dateFormat != null;
     }
 }

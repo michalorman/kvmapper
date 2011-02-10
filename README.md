@@ -13,8 +13,7 @@ maps it to the Java objects (JavaBeans).
 
 To map key-value pairs to Java objects use instance of ``KVMapper`` class:
 
-    String input = "firstName = John\n" +
-        "lastName = Doe"
+    String input = "firstName = John\nlastName = Doe"
     KVMapper mapper = new KVMapper(); // Creates mapper with default configuration
     User user = mapper.readObject(input, User.class);
     user.getFirstName(); // => "John"
