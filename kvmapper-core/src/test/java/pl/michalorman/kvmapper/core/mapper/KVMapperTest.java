@@ -4,8 +4,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pl.michalorman.kvmapper.core.config.Config;
+import pl.michalorman.kvmapper.core.exception.ValueConversionException;
+import pl.michalorman.kvmapper.core.fixture.AnnotatedWithDate;
 import pl.michalorman.kvmapper.core.fixture.Primitives;
 import pl.michalorman.kvmapper.core.fixture.Types;
+import pl.michalorman.kvmapper.core.fixture.WithDate;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -146,6 +149,49 @@ public class KVMapperTest {
             assertEquals(result.getTypeChar(), typeChar, "should set value of 'typeChar' property");
         }
         assertEquals(result.getTypeString(), typeString, "should set value of 'typeString' property");
+    }
+
+    @Test(description = "If date format not configured, should deserialize not formatted date.")
+    public void shouldDeserializeNotFormattedDate() throws IOException {
+        Date date = new Date();
+        String input = "date=" + date.getTime();
+        WithDate result = mapper.readObject(input, WithDate.class);
+        assertNotNull(result, "Should instantiate object.");
+        assertEquals(result.getDate(), date, "Should deserialize date.");
+    }
+
+    @Test(description = "If date format configured, should deserialize formatted date using configured date format.")
+    public void shouldDeserializeFormattedDateUsingConfiguredDateFormat() throws IOException {
+        Date date = new Date();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
+        String input = "date=" + df.format(date);
+        mapper.getConfig().setDateFormat(df);
+        WithDate result = mapper.readObject(input, WithDate.class);
+        assertNotNull(result, "Should instantiate object.");
+        assertEquals(df.format(result.getDate()), df.format(date), "Should deserialize date.");
+    }
+
+    @Test(description = "If date format annotation present, should deserialize formatted date using annotation value instead of configured date format.")
+    public void shouldDeserializeFormattedDateUsingAnnotationDateFormat() throws IOException {
+        Date date = new Date();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String input = "date=" + sdf.format(date);
+        mapper.getConfig().setDateFormat(df);
+        AnnotatedWithDate result = mapper.readObject(input, AnnotatedWithDate.class);
+        assertNotNull(result, "Should instantiate object.");
+        assertEquals(sdf.format(result.getDate()), sdf.format(date), "Should deserialize date.");
+    }
+
+    @Test(description = "Should throw ValueConversionException while attempt to deserialize value with invalid date format.",
+            expectedExceptions = ValueConversionException.class)
+    public void shouldThrowValueConversionExceptionIfDeserializingDateWithInvalidFormat() throws IOException {
+        Date date = new Date();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String input = "date=" + sdf.format(date);
+        mapper.getConfig().setDateFormat(df);
+        mapper.readObject(input, WithDate.class);
     }
 
 
@@ -419,36 +465,4 @@ public class KVMapperTest {
         }
     }
 
-    public class WithDate {
-        private Date date;
-
-        public WithDate(Date date) {
-            this.date = date;
-        }
-
-        public Date getDate() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
-    }
-
-    public class AnnotatedWithDate {
-        private Date date;
-
-        public AnnotatedWithDate(Date date) {
-            this.date = date;
-        }
-
-        @pl.michalorman.kvmapper.core.annotation.DateFormat("yyyy-MM-dd")
-        public Date getDate() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
-    }
 }

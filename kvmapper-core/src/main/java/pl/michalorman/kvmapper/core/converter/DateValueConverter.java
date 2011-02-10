@@ -2,7 +2,7 @@ package pl.michalorman.kvmapper.core.converter;
 
 import pl.michalorman.kvmapper.core.annotation.DateFormat;
 import pl.michalorman.kvmapper.core.config.Config;
-import pl.michalorman.kvmapper.core.exception.KVMapperException;
+import pl.michalorman.kvmapper.core.exception.ValueConversionException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.text.ParseException;
@@ -42,7 +42,7 @@ public class DateValueConverter extends JavaTypeValueConverter<Date> {
                 return config.getDateFormat().parse(value);
             }
         } catch (ParseException e) {
-            throw new KVMapperException("Unable to parse date using configured date format.", e);
+            throw new ValueConversionException("Unable to parse date using configured date format.", e);
         }
         return new Date(Long.valueOf(value));
     }

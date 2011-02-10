@@ -1,7 +1,7 @@
 package pl.michalorman.kvmapper.core.parser;
 
 import pl.michalorman.kvmapper.core.config.Config;
-import pl.michalorman.kvmapper.core.exception.KVMapperException;
+import pl.michalorman.kvmapper.core.exception.ParserException;
 import pl.michalorman.kvmapper.core.introspect.TypeDescription;
 import pl.michalorman.kvmapper.core.introspect.TypeIntrospector;
 import pl.michalorman.kvmapper.core.introspect.WritableProperty;
@@ -39,9 +39,9 @@ public class DefaultKeyValuePairsParser implements KeyValuePairsParser {
         try {
             return type.newInstance();
         } catch (InstantiationException e) {
-            throw new KVMapperException("Cannot create instance of " + type.getCanonicalName(), e);
+            throw new ParserException("Cannot create instance of " + type.getCanonicalName(), e);
         } catch (IllegalAccessException e) {
-            throw new KVMapperException("Cannot create instance of " + type.getCanonicalName(), e);
+            throw new ParserException("Cannot create instance of " + type.getCanonicalName(), e);
         }
     }
 
