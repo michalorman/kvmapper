@@ -15,6 +15,10 @@ public class ShortValueConverter extends JavaTypeValueConverter<Short> {
         super(defaultValue);
     }
 
+    public ShortValueConverter() {
+        this(null);
+    }
+
     public Short getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Short.valueOf(value);
     }

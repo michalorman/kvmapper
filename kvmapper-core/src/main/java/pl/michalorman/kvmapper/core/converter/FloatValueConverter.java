@@ -15,6 +15,10 @@ public class FloatValueConverter extends JavaTypeValueConverter<Float> {
         super(defaultValue);
     }
 
+    public FloatValueConverter() {
+        this(null);
+    }
+
     public Float getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Float.valueOf(value);
     }

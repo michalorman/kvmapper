@@ -15,6 +15,10 @@ public class BooleanValueConverter extends JavaTypeValueConverter<Boolean> {
         super(defaultValue);
     }
 
+    public BooleanValueConverter() {
+        this(null);
+    }
+
     public Boolean getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Boolean.valueOf(value);
     }

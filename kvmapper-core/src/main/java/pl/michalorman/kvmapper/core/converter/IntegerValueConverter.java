@@ -15,6 +15,10 @@ public class IntegerValueConverter extends JavaTypeValueConverter<Integer> {
         super(defaultValue);
     }
 
+    public IntegerValueConverter() {
+        this(null);
+    }
+
     public Integer getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Integer.valueOf(value);
     }

@@ -1,6 +1,7 @@
 package pl.michalorman.kvmapper.core.converter;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,13 +35,14 @@ public class ValueConverterFactory {
     }
 
     private void initTypeConverters() {
-        defaultConverters.put(Short.class, new ShortValueConverter(null));
-        defaultConverters.put(Integer.class, new IntegerValueConverter(null));
-        defaultConverters.put(Long.class, new LongValueConverter(null));
-        defaultConverters.put(Float.class, new FloatValueConverter(null));
-        defaultConverters.put(Double.class, new DoubleValueConverter(null));
-        defaultConverters.put(Boolean.class, new BooleanValueConverter(null));
-        defaultConverters.put(Character.class, new CharacterValueConverter(null));
+        defaultConverters.put(Short.class, new ShortValueConverter());
+        defaultConverters.put(Integer.class, new IntegerValueConverter());
+        defaultConverters.put(Long.class, new LongValueConverter());
+        defaultConverters.put(Float.class, new FloatValueConverter());
+        defaultConverters.put(Double.class, new DoubleValueConverter());
+        defaultConverters.put(Boolean.class, new BooleanValueConverter());
+        defaultConverters.put(Character.class, new CharacterValueConverter());
         defaultConverters.put(String.class, new StringValueConverter());
+        defaultConverters.put(Date.class, new DateValueConverter());
     }
 }

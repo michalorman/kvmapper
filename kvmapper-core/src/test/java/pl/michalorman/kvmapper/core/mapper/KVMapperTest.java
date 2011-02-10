@@ -3,6 +3,7 @@ package pl.michalorman.kvmapper.core.mapper;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pl.michalorman.kvmapper.core.config.Config;
 import pl.michalorman.kvmapper.core.fixture.Primitives;
 import pl.michalorman.kvmapper.core.fixture.Types;
 
@@ -10,8 +11,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static org.testng.Assert.*;
 
@@ -348,6 +352,33 @@ public class KVMapperTest {
         assertEquals(result, "propertyC=valueC\npropertyB=valueB\npropertyA=valueA");
     }
 
+    @Test(description = "If date format not provided should serialize date property without formatting.")
+    public void shouldSerializeDateWithoutFormatting() {
+        Date date = new Date();
+        String result = mapper.dump(new WithDate(date));
+        assertEquals(result, "date=" + date.getTime(), "Should serialize date without formatting");
+    }
+
+    @Test(description = "If date format configured, should serialize date property using it.")
+    public void shouldSerializeDateUsingConfiguredFormat() {
+        Date date = new Date();
+        Config config = new Config();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+        config.setDateFormat(df);
+        String result = new KVMapper(config).dump(new WithDate(date));
+        assertEquals(result, "date=" + df.format(date), "Should serialize date with configured format");
+    }
+
+    @Test(description = "If date format specified using annotation, should serialize date property using it instead of configured.")
+    public void shouldSerializeDateUsingFormatFromAnnotation() {
+        Date date = new Date();
+        Config config = new Config();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT); // configured, but overridden by annotation
+        mapper.setConfig(config);
+        String result = mapper.dump(new AnnotatedWithDate(date));
+        assertEquals(result, "date=" + new SimpleDateFormat("yyyy-MM-dd").format(date), "Should serialize date with annotated format");
+    }
+
     /*==========================================================================
         Classes used in tests
      */
@@ -385,6 +416,39 @@ public class KVMapperTest {
 
         public String getPropertyC() {
             return propertyC;
+        }
+    }
+
+    public class WithDate {
+        private Date date;
+
+        public WithDate(Date date) {
+            this.date = date;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+    }
+
+    public class AnnotatedWithDate {
+        private Date date;
+
+        public AnnotatedWithDate(Date date) {
+            this.date = date;
+        }
+
+        @pl.michalorman.kvmapper.core.annotation.DateFormat("yyyy-MM-dd")
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
         }
     }
 }

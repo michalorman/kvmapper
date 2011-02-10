@@ -15,6 +15,10 @@ public class CharacterValueConverter extends JavaTypeValueConverter<Character> {
         super(defaultValue);
     }
 
+    public CharacterValueConverter() {
+        this(null);
+    }
+
     public Character getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return value.charAt(0);
     }

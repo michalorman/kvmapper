@@ -15,6 +15,10 @@ public class LongValueConverter extends JavaTypeValueConverter<Long> {
         super(defaultValue);
     }
 
+    public LongValueConverter() {
+        this(null);
+    }
+
     public Long getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Long.valueOf(value);
     }

@@ -15,6 +15,10 @@ public class DoubleValueConverter extends JavaTypeValueConverter<Double> {
         super(defaultValue);
     }
 
+    public DoubleValueConverter() {
+        this(null);
+    }
+
     public Double getFromString(String value, AnnotatedElement annotatedElement, Config config) {
         return Double.valueOf(value);
     }
