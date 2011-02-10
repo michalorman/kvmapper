@@ -11,6 +11,8 @@ maps it to the Java objects (JavaBeans).
 
 ## Usage
 
+### Reading objects
+
 To map key-value pairs to Java objects use instance of ``KVMapper`` class:
 
     String input = "firstName = John\nlastName = Doe"
@@ -21,6 +23,8 @@ To map key-value pairs to Java objects use instance of ``KVMapper`` class:
 
 The ``readObject()`` method will read given input and instantiate object of given class
 applying values to fields according to key-value pairs given in the input.
+
+### Serializing objects
 
 There are several ways to serialize object. You can use the ``writeObject()`` method,
 that serializes object to specified output:
@@ -35,6 +39,8 @@ You can serialize object directly to ``String`` using ``dump()`` method:
 
 There are also ``writeObjects()`` and ``dumpAll()`` methods which iterates over collection or
 array of objects and serializes each of them.
+
+### Serializing and reading as maps
 
 The ``KVMapper`` allows to deserialize and serialize key-value pairs to and from a ``Map``:
 
@@ -51,8 +57,8 @@ The ``KVMapper`` allows to deserialize and serialize key-value pairs to and from
 This can be used if you do not want to map key-value pairs to particular object. However in this
 case all values will be of type ``String``, while mapping to object values will be converted to
 type of the matching property. Also when using mapping to a ``Map`` rather than object, all key-value
-pairs will be stored in the map, while mapping to an object, if there is no property for given key
-the pair is ignored.
+pairs will be stored in the map, while mapping to an object, if there is no property corresponding
+to given key the pair is ignored.
 
 ### Value conversion
 
@@ -63,10 +69,11 @@ The **KVMapper** provides conversion of Java built-in types by default. It means
 
     precision = 0.10
 
-If mapped to given class:
+If mapped to given property:
 
     public class Parameters {
         float precision;
+        // getter + setter
     }
 
 Will be automatically converted to ``float``.
@@ -74,9 +81,43 @@ Will be automatically converted to ``float``.
 Besides of the default behavior the **KVMapper** allows to configure custom value converters. Refer
 to the appropriate section below for more details.
 
+The **KVMapper** supports serializing and deserializing enumerations. Example having given class:
+
+    public class WithEnumeration {
+        private ElementType elementType;
+        // getter + setter
+    }
+
+Serialization will give following output:
+
+    WithEnumeration we = new WithEnumeration();
+    we.setElementType(ElementType.CONSTRUCTOR);
+    mapper.dump(we); // => "elementType=CONSTRUCTOR"
+
 #### Formatting date
 
-TBD
+The **KVMapper** by default serializes and deserializes dates as miliseconds (by invoking ``getTime()``
+method on date object). However there are couple ways to configure ``DateFormat`` that should be used
+for serialization and deserialization.
+
+You can configure date format on framework level, so it will be used while serializing and deserializing
+each object. When creating the instance of ``KVMapper`` it is assigned default instance of ``Config`` object
+which is the framework configuration. You can either supply new configuration object or modify existing:
+
+    mapper.getConfig().setDateFormat(DateFormat.getDateInstance(DateFormat.SHORT));
+
+You can also configure the date format on property level using the ``@DateFormat`` annotation:
+
+    public class User {
+        @DateFormat("yyyy-MM-dd")
+        public Date getBirthDate() { return birthDate; }
+    }
+
+Note that applying annotation on getter method will be used only during serialization. If you wan't
+to use the same format while deserializing object you need to apply annotation also on setter method.
+
+The annotation configuration overrides the framework configuration. The value provided in annotation
+must fulfill the requirements of ``SimpleDateFormat`` class.
 
 #### Custom value converters
 
