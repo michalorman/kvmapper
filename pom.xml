@@ -17,6 +17,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>pl.michalorman.kvmapper</groupId>
+                <artifactId>kvmapper-core</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>5.14.6</version>
@@ -40,5 +45,6 @@
 
     <modules>
         <module>kvmapper-core</module>
+        <module>kvmapper-crypto</module>
     </modules>
 </project>

@@ -1,6 +1,6 @@
 package pl.michalorman.kvmapper.core.converter;
 
-import pl.michalorman.kvmapper.core.util.MethodUtils;
+import pl.michalorman.kvmapper.core.exception.KVMapperException;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -22,12 +22,25 @@ public class ValueConverterFactory {
     }
 
     public ValueConverter getValueConverter(Method method) {
-        // TODO: add instantiating value converter from the annotation
-        Class<?> type = MethodUtils.getType(method);
-        if (type.isEnum()) {
+        Class<?> type = getType(method);
+        if (!defaultConverters.containsKey(type) && method.isAnnotationPresent(pl.michalorman.kvmapper.core.annotation.ValueConverter.class)) {
+            ValueConverter converter = createNewValueConverter(method);
+            defaultConverters.put(type, converter);
+        } else if (type.isEnum()) {
             return defaultConverters.get(Enum.class);
         }
-        return defaultConverters.get(getType(method));
+        return defaultConverters.get(type);
+    }
+
+    private ValueConverter createNewValueConverter(Method method) {
+        try {
+            Class<? extends ValueConverter> type = method.getAnnotation(pl.michalorman.kvmapper.core.annotation.ValueConverter.class).value();
+            return type.newInstance();
+        } catch (InstantiationException e) {
+            throw new KVMapperException("Cannot create new instance of value converter.", e);
+        } catch (IllegalAccessException e) {
+            throw new KVMapperException("Cannot create new instance of value converter.", e);
+        }
     }
 
     private void initPrimitiveConverters() {
