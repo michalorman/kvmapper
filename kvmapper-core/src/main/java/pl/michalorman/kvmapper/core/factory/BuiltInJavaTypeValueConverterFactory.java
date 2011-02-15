@@ -1,7 +1,6 @@
 package pl.michalorman.kvmapper.core.factory;
 
 import pl.michalorman.kvmapper.core.converter.*;
-import pl.michalorman.kvmapper.core.exception.KVMapperException;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -11,64 +10,45 @@ import java.util.Map;
 import static pl.michalorman.kvmapper.core.util.MethodUtils.getType;
 
 /**
- * Creates instances of {@link pl.michalorman.kvmapper.core.converter.ValueConverter} depending on the method type (return type for
- * getter method, parameter type for setter).
- * <p/>
- * Creates instances are buffered thus each converter is instantiated only once.
+ * Creates the value value converter for supported built-in Java types. Does not takes into
+ * consideration any annotation incl. {@link pl.michalorman.kvmapper.core.annotation.ValueConverter}
+ * (but the value converters may use the annotations).
  *
  * @author Michal Orman
  * @version 1.0
  */
-public class BuiltInJavaTypeValueConverterFactory implements ValueConverterFactory {
-    private Map<Class, ValueConverter> defaultConverters = new HashMap<Class, ValueConverter>();
+public class BuiltInJavaTypeValueConverterFactory extends ChainedValueConverterFactory {
+    /** Value converters for built-in Java types. */
+    private Map<Class, ValueConverter> converters = new HashMap<Class, ValueConverter>();
 
-    public BuiltInJavaTypeValueConverterFactory() {
+    protected BuiltInJavaTypeValueConverterFactory() {
         initPrimitiveConverters();
         initTypeConverters();
     }
 
-    public ValueConverter getValueConverter(Method method) {
-        Class<?> type = getType(method);
-        if (!defaultConverters.containsKey(type) && method.isAnnotationPresent(pl.michalorman.kvmapper.core.annotation.ValueConverter.class)) {
-            ValueConverter converter = createNewValueConverter(method);
-            defaultConverters.put(type, converter);
-        } else if (type.isEnum()) {
-            return defaultConverters.get(Enum.class);
-        }
-        return defaultConverters.get(type);
-    }
-
-    private ValueConverter createNewValueConverter(Method method) {
-        try {
-            Class<? extends ValueConverter> type = method.getAnnotation(pl.michalorman.kvmapper.core.annotation.ValueConverter.class).value();
-            return type.newInstance();
-        } catch (InstantiationException e) {
-            throw new KVMapperException("Cannot create new instance of value converter.", e);
-        } catch (IllegalAccessException e) {
-            throw new KVMapperException("Cannot create new instance of value converter.", e);
-        }
+    protected ValueConverter getOrCreateValueConverter(Method method) {
+        return converters.get(getType(method));
     }
 
     private void initPrimitiveConverters() {
-        defaultConverters.put(short.class, new ShortValueConverter(Short.MIN_VALUE));
-        defaultConverters.put(int.class, new IntegerValueConverter(Integer.MIN_VALUE));
-        defaultConverters.put(long.class, new LongValueConverter(Long.MIN_VALUE));
-        defaultConverters.put(float.class, new FloatValueConverter(Float.MIN_VALUE));
-        defaultConverters.put(double.class, new DoubleValueConverter(Double.MIN_VALUE));
-        defaultConverters.put(boolean.class, new BooleanValueConverter(Boolean.FALSE));
-        defaultConverters.put(char.class, new CharacterValueConverter(Character.MIN_VALUE));
+        converters.put(short.class, new ShortValueConverter(Short.MIN_VALUE));
+        converters.put(int.class, new IntegerValueConverter(Integer.MIN_VALUE));
+        converters.put(long.class, new LongValueConverter(Long.MIN_VALUE));
+        converters.put(float.class, new FloatValueConverter(Float.MIN_VALUE));
+        converters.put(double.class, new DoubleValueConverter(Double.MIN_VALUE));
+        converters.put(boolean.class, new BooleanValueConverter(Boolean.FALSE));
+        converters.put(char.class, new CharacterValueConverter(Character.MIN_VALUE));
     }
 
     private void initTypeConverters() {
-        defaultConverters.put(Short.class, new ShortValueConverter());
-        defaultConverters.put(Integer.class, new IntegerValueConverter());
-        defaultConverters.put(Long.class, new LongValueConverter());
-        defaultConverters.put(Float.class, new FloatValueConverter());
-        defaultConverters.put(Double.class, new DoubleValueConverter());
-        defaultConverters.put(Boolean.class, new BooleanValueConverter());
-        defaultConverters.put(Character.class, new CharacterValueConverter());
-        defaultConverters.put(String.class, new StringValueConverter());
-        defaultConverters.put(Date.class, new DateValueConverter());
-        defaultConverters.put(Enum.class, new EnumValueConverter());
+        converters.put(Short.class, new ShortValueConverter());
+        converters.put(Integer.class, new IntegerValueConverter());
+        converters.put(Long.class, new LongValueConverter());
+        converters.put(Float.class, new FloatValueConverter());
+        converters.put(Double.class, new DoubleValueConverter());
+        converters.put(Boolean.class, new BooleanValueConverter());
+        converters.put(Character.class, new CharacterValueConverter());
+        converters.put(String.class, new StringValueConverter());
+        converters.put(Date.class, new DateValueConverter());
     }
 }
