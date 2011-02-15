@@ -24,17 +24,19 @@ public class EncryptingValueConverter<T> implements ValueConverter<T> {
     private SecretKey key;
 
     /** Algorithm to use for encryption/decryption. */
-    private String algorithm = "AES";
+    private String algorithm;
 
     /**
      * Class constructor.
      *
      * @param valueConverter Converter to decorate.
+     * @param algorithm      Algorithm to be used for ecnryption/decryption.
      * @param key            Key to use for encryption/decryption.
      */
-    public EncryptingValueConverter(ValueConverter<T> valueConverter, SecretKey key) {
+    public EncryptingValueConverter(ValueConverter<T> valueConverter, String algorithm, SecretKey key) {
         this.valueConverter = valueConverter;
         this.key = key;
+        this.algorithm = algorithm;
     }
 
     public String toString(T value, Method getter, Config config) {
@@ -45,9 +47,5 @@ public class EncryptingValueConverter<T> implements ValueConverter<T> {
     public T fromString(String value, Method setter, Config config) {
         String decrypted = decrypt(algorithm, key, value);
         return valueConverter.fromString(decrypted, setter, config);
-    }
-
-    public void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
     }
 }

@@ -4,7 +4,8 @@ import pl.michalorman.kvmapper.core.annotation.ExceptProperties;
 import pl.michalorman.kvmapper.core.annotation.IgnoreProperty;
 import pl.michalorman.kvmapper.core.annotation.OnlyProperties;
 import pl.michalorman.kvmapper.core.config.Config;
-import pl.michalorman.kvmapper.core.converter.ValueConverterFactory;
+import pl.michalorman.kvmapper.core.factory.BuiltInJavaTypeValueConverterFactory;
+import pl.michalorman.kvmapper.core.factory.ValueConverterFactory;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -22,7 +23,7 @@ import static pl.michalorman.kvmapper.core.util.StringUtils.uncapitalized;
  */
 public class DefaultTypeIntrospector implements TypeIntrospector {
 
-    private ValueConverterFactory valueConverterFactory = new ValueConverterFactory();
+    private ValueConverterFactory valueConverterFactory = new BuiltInJavaTypeValueConverterFactory();
 
     public TypeDescription introspect(Class<?> type, Config config) {
         TypeDescription description = new TypeDescription(type, config);

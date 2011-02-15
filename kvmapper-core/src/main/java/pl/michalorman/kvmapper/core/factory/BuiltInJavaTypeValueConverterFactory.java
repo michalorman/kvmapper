@@ -1,5 +1,6 @@
-package pl.michalorman.kvmapper.core.converter;
+package pl.michalorman.kvmapper.core.factory;
 
+import pl.michalorman.kvmapper.core.converter.*;
 import pl.michalorman.kvmapper.core.exception.KVMapperException;
 
 import java.lang.reflect.Method;
@@ -10,13 +11,18 @@ import java.util.Map;
 import static pl.michalorman.kvmapper.core.util.MethodUtils.getType;
 
 /**
+ * Creates instances of {@link pl.michalorman.kvmapper.core.converter.ValueConverter} depending on the method type (return type for
+ * getter method, parameter type for setter).
+ * <p/>
+ * Creates instances are buffered thus each converter is instantiated only once.
+ *
  * @author Michal Orman
  * @version 1.0
  */
-public class ValueConverterFactory {
+public class BuiltInJavaTypeValueConverterFactory implements ValueConverterFactory {
     private Map<Class, ValueConverter> defaultConverters = new HashMap<Class, ValueConverter>();
 
-    public ValueConverterFactory() {
+    public BuiltInJavaTypeValueConverterFactory() {
         initPrimitiveConverters();
         initTypeConverters();
     }

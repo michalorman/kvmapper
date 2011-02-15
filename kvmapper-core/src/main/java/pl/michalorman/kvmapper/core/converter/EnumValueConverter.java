@@ -13,7 +13,7 @@ import static pl.michalorman.kvmapper.core.util.MethodUtils.getType;
  * @version 1.0
  */
 public class EnumValueConverter extends JavaTypeValueConverter<Object> {
-    protected EnumValueConverter() {
+    public EnumValueConverter() {
         super(null);
     }
 

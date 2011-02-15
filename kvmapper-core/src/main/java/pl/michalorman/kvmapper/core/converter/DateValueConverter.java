@@ -16,7 +16,7 @@ import java.util.Date;
  * @version 1.0
  */
 public class DateValueConverter extends JavaTypeValueConverter<Date> {
-    protected DateValueConverter() {
+    public DateValueConverter() {
         super(null);
     }
 
