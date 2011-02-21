@@ -45,6 +45,5 @@
 
     <modules>
         <module>kvmapper-core</module>
-        <module>kvmapper-crypto</module>
     </modules>
 </project>
