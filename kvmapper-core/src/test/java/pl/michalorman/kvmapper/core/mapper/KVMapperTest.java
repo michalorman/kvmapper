@@ -200,6 +200,16 @@ public class KVMapperTest {
         assertEquals(result.getElementType(), ElementType.CONSTRUCTOR);
     }
 
+    @Test(description = "Should deserialize property using explicitly defined value converter.")
+    public void shouldDeserializePropertyUsingExplicitValueConverter() throws IOException {
+        String input = "property=Lorem,ipsum,dolor,sit,amet";
+        WithCustomConverterExplicit result = mapper.readObject(input, WithCustomConverterExplicit.class);
+        assertNotNull(result);
+        String[] property = result.getProperty();
+        assertEquals(property.length, 5);
+        assertEquals(property, "Lorem,ipsum,dolor,sit,amet".split(","));
+    }
+
 
     /*==========================================================================
         Test serialization
@@ -436,6 +446,13 @@ public class KVMapperTest {
         WithEnum target = new WithEnum(ElementType.FIELD);
         String result = mapper.dump(target);
         assertEquals(result, "elementType=FIELD");
+    }
+
+    @Test(description = "Should serialize object using explicitly specified value converter.")
+    public void shouldSerializeUsingExplicitlySpecifiedValueConverter() {
+        WithCustomConverterExplicit target = new WithCustomConverterExplicit("Lorem ipsum dolor sit amet".split(" "));
+        String result = mapper.dump(target);
+        assertEquals(result, "property=Lorem,ipsum,dolor,sit,amet");
     }
 
     /*==========================================================================

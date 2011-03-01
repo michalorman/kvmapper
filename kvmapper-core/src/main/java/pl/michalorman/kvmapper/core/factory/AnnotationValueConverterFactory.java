@@ -37,7 +37,7 @@ public class AnnotationValueConverterFactory extends ChainedValueConverterFactor
     private Class<? extends ValueConverter> getValueConverterType(Method method) {
         Class<? extends ValueConverter> type = null;
         if (isValueConverterAnnotationPreset(method)) {
-            type = getValueConverterType(method);
+            type = getValueConverterType((AnnotatedElement) method);
         }
         for (Annotation annotation : method.getAnnotations()) {
             if (isValueConverterAnnotationPreset(annotation.annotationType())) {
