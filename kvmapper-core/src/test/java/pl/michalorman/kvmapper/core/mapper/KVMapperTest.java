@@ -210,6 +210,16 @@ public class KVMapperTest {
         assertEquals(property, "Lorem,ipsum,dolor,sit,amet".split(","));
     }
 
+    @Test(description = "Should deserialize property using implicitly defined value converter.")
+    public void shouldDeserializePropertyUsingImplicitlyValueConverter() throws IOException {
+        String input = "property=Lorem,ipsum,dolor,sit,amet";
+        WithCustomConverterImplicit result = mapper.readObject(input, WithCustomConverterImplicit.class);
+        assertNotNull(result);
+        String[] property = result.getProperty();
+        assertEquals(property.length, 5);
+        assertEquals(property, "Lorem,ipsum,dolor,sit,amet".split(","));
+    }
+
 
     /*==========================================================================
         Test serialization
@@ -451,6 +461,13 @@ public class KVMapperTest {
     @Test(description = "Should serialize object using explicitly specified value converter.")
     public void shouldSerializeUsingExplicitlySpecifiedValueConverter() {
         WithCustomConverterExplicit target = new WithCustomConverterExplicit("Lorem ipsum dolor sit amet".split(" "));
+        String result = mapper.dump(target);
+        assertEquals(result, "property=Lorem,ipsum,dolor,sit,amet");
+    }
+
+    @Test(description = "Should serialize object using implicitly specified value converter.")
+    public void shouldSerializeUsingImplicitlySpecifiedValueConverter() {
+        WithCustomConverterImplicit target = new WithCustomConverterImplicit("Lorem ipsum dolor sit amet".split(" "));
         String result = mapper.dump(target);
         assertEquals(result, "property=Lorem,ipsum,dolor,sit,amet");
     }
