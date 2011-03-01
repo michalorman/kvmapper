@@ -155,12 +155,12 @@ To use this converter need to apply the ``ValueConverter`` annotation on certain
     public class Foo {
         private String[] property;
 
-        @ValueConverter(CustomValueConverter.class)
+        @ValueConverter(CSVConverter.class)
         public String[] getProperty() {
             return property;
         }
 
-        @ValueConverter(CustomValueConverter.class)
+        @ValueConverter(CSVConverter.class)
         public void setProperty(String[] property) {
             this.property = property;
         }
@@ -170,7 +170,7 @@ This kind of declaration is called explicit, while it is a bit verbose. Note we 
 class and we violate DRY rule here. The **KVMapper** provides better way of applying this configuration. The
 **ValueConverter** is also a meta-annotation, which means that it may be used to annotate other annotations. Eg.:
 
-    @ValueConverter(CustomValueConverter.class)
+    @ValueConverter(CSVConverter.class)
     @Target({ ElementType.METHOD })
     @Retention(RetentionPolicy.RUNTIME)
     public @interface CSV {
