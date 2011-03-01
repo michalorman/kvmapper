@@ -121,7 +121,79 @@ must fulfill the requirements of ``SimpleDateFormat`` class.
 
 #### Custom value converters
 
-TBD
+Each property value must be converted to string during serialization and from string during deserialization.
+The **KVMapper** provides set of value converters for built-in Java types. However sometimes this default
+behavior must be changed, or support for other, not built-in type, must be provided. The **KVMapper** allows
+to define custom value converters and decoratively - using annotations - apply this configuration to certain
+class.
+
+To specify the value converter to use, when serializing given property use the
+``pl.michalorman.kvmapper.core.annotation.ValueConverter`` annotation. This class takes the reference to type
+of the value converter which will be instantiated and used. The value converter must implement the
+``pl.michalorman.kvmapper.core.converter.ValueConverter`` interface (note this interface has same name as
+annotation, but different packages). Applying the ``ValueConverter`` annotation to setter method will indicate
+to use specified converter while serializing, however if same converter is required to be used for deserialization
+the getter method must be annotated with the annotation.
+
+For example, assume created following value converter:
+
+    public class CSVConverter implements ValueConverter<String[]> {
+        public String toString(String[] value, Method getter, Config config) {
+            return join(value, ",");
+        }
+
+        public String[] fromString(String value, Method setter, Config config) {
+            return value.split(",");
+        }
+    }
+
+This converted should be applied to property of type ``String[]`` and will serialize the value of this array
+by joining each string together separated with comma (as CSV).
+
+To use this converter need to apply the ``ValueConverter`` annotation on certain class properties:
+
+    public class Foo {
+        private String[] property;
+
+        @ValueConverter(CustomValueConverter.class)
+        public String[] getProperty() {
+            return property;
+        }
+
+        @ValueConverter(CustomValueConverter.class)
+        public void setProperty(String[] property) {
+            this.property = property;
+        }
+    }
+
+This kind of declaration is called explicit, while it is a bit verbose. Note we explicitly specify the converter
+class and we violate DRY rule here. The **KVMapper** provides better way of applying this configuration. The
+**ValueConverter** is also a meta-annotation, which means that it may be used to annotate other annotations. Eg.:
+
+    @ValueConverter(CustomValueConverter.class)
+    @Target({ ElementType.METHOD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface CSV {
+    }
+
+Now we can apply our new annotation to class:
+
+    public class Foo {
+        private String[] property;
+
+        @CSV
+        public String[] getProperty() {
+            return property;
+        }
+
+        @CSV
+        public void setProperty(String[] property) {
+            this.property = property;
+        }
+    }
+
+This way of configuration is named implicit, while we do not explicitly specify the converter class. Also the class
+is specified in one place (in meta-annotation) so we do not violate the DRY rule.
 
 ### Ignoring properties
 
